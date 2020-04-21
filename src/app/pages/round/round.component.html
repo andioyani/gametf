@@ -1,0 +1,59 @@
+<div *ngIf="game" class="container">
+
+	<div *ngIf="round && game.status != 'finished'">
+		<h2>{{ game.letters[game.current] }}</h2>
+
+		<div *ngIf="game.status == 'revision'">
+			<ul>
+				<li *ngFor="let player of roundsPlayers">
+					{{ player.uidPlayer }}
+					<ul>
+						<li *ngFor="let categoryPlayer of player.roundPlayer[game.current].categories">
+							{{ categoryPlayer.name }}: {{ categoryPlayer.value }}
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<button class="btn btn-block btn-success" type="button" (click)="approve()" [disabled]="userApproved()" >CONTINUAR </button>
+		</div>
+
+		<div *ngIf="game.status == 'online'">
+			<form
+					#roundForm="ngForm" *ngIf="game"
+					(ngSubmit)="onSubmit(roundForm)"
+			>	
+				<ul>
+					<li *ngFor="let category of round.roundPlayer[game.current].categories">
+						<input class="form-control" type="text" name="{{ category.name }}" id="{{ category.name }}" placeholder="{{ category.name }}" [(ngModel)]="category.value" (change)="changeValue()">					
+					</li>
+				</ul>	
+
+				<button class="btn btn-block btn-success" type="submit" >BASTA PARA MI! </button>
+				<!--<button class="btn btn-block btn-success" type="submit" >SIGUIENTE! {{ round.roundNumber }} / {{ game.rounds }} </button>-->
+				
+			</form>
+		</div>	
+	</div>
+	
+	<div *ngIf="game.status == 'finished'">			
+			<h3>Juego Finalizado!</h3>
+			<ul>
+				<li *ngFor="let data of roundsPlayers">
+					<h3>{{ data.name }}</h3>
+					<ul>
+						<li *ngFor="let round of data.roundPlayer">
+							<h4>{{ round.letter }}</h4>
+							<ul>
+								<li *ngFor="let cats of round.categories">
+									<b>{{ cats.name }}:</b> {{ cats.value}}
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<hr>
+				</li>
+			</ul>
+
+	</div>
+
+</div>

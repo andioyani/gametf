@@ -1,0 +1,110 @@
+<div class="m-2 animated fadeInLeft">
+	<h1>Nuevo juego</h1>
+	<hr>
+	<button class="btn btn-primary" type="button" *ngIf="!game" (click)="create()">NUEVO JUEGO</button>
+	
+	<form 
+		#newForm="ngForm" *ngIf="game"
+		(ngSubmit)="onSubmit(newForm)"
+	>
+		<div class="form-row">
+		    <div class="form-group col-md-6">
+				<div class="row mb-2">
+				    <div class="col">
+				        <label for="selectedLetters">Letras a usar</label>
+				    </div>
+				    <div class="col text-right">    
+						<button class="btn btn-sm btn-danger" type="button" (click)="removeElement()" [disabled]="letters.length < 6">
+							Quitar letra/s
+						</button>
+				    </div>
+				</div>			    
+
+			    <select class="custom-select" multiple name="selectedLetters" id="selectedLetters" [(ngModel)]="selectedLetters">
+				  <option value="{{letter}}" *ngFor="let letter of letters">{{letter}}</option>
+				</select>
+		    </div>
+		    <div class="form-group col-md-6">
+				<div class="row mb-2">
+				    <div class="col">
+				        <label for="removedLetters">Letras excluídas</label>
+				    </div>
+				    <div class="col text-right">    
+				        <button class="btn btn-sm btn-success" type="button" (click)="addElement()" [disabled]="lettersRemoved.length < 1">
+				        	Agregar letra/s
+				        </button>
+				    </div>
+				</div>			    
+			    <select class="custom-select" multiple name="removedLetters" id="removedLetters" [(ngModel)]="removedLetters">
+				  <option value="{{letter}}" *ngFor="let letter of lettersRemoved">{{letter}}</option>
+				</select>
+			</div>
+		</div>
+	    <div class="form-group">
+			<div class="form-group">
+		    	<label for="rounds">Rondas  </label>
+				<div class="input-group">
+					<input type="number" class="form-control" id="rounds" name="rounds" placeholder="Cantidad de rondas" required [(ngModel)]="game.rounds" aria-describedby="button-addon5" readonly>
+					<div class="input-group-append" id="button-addon5">
+						<button class="btn btn-outline-danger" type="button" [disabled]="game.rounds < 6" (click)="remRound()"><i class="fas fa-minus"></i></button>
+						<button class="btn btn-outline-success" type="button" [disabled]="letters.length == game.rounds"  (click)="addRound()"><i class="fas fa-plus" ></i></button>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<div class="form-group">
+			<div class="custom-control custom-switch">
+			  <input type="checkbox" class="custom-control-input" id="stop" name="stop" [(ngModel)]="game.stop">
+			  <label class="custom-control-label" for="stop">Primero en terminar finaliza la ronda</label>
+			</div>
+		</div>
+		<hr>
+		<h3>Categorías</h3>
+		<hr>
+	    <div class="form-group">
+				<div class="input-group">
+					<input type="text" class="form-control" id="category" name="category" placeholder="Nueva categoría" [(ngModel)]="category" aria-describedby="button-addon6">
+					<div class="input-group-append" id="button-addon6">
+						<button class="btn btn-outline-success" type="button" [disabled]="!category" (click)="addCategory()"><i class="fas fa-plus" ></i></button>
+					</div>
+				</div>
+				<ul class="ml-1 mr-1 list-group">
+					<li class="list-group-item list-group-item-action list-group-item-light" *ngFor="let categoryName of game.categories; let c = index" >
+						<div class="row mb-2 mt-2">
+					    	<div class="col">
+								{{ categoryName }}
+							</div>
+					    	<div class="col text-right">
+								<button type="button" class="btn-sm btn-danger" (click)="remCategory(categoryName)"><i class="fas fa-minus"></i></button>
+							</div>
+						</div>
+					</li>
+				</ul>
+		</div>
+		<hr class="mt-2">
+		<h3>Invitar amigos</h3>
+		<hr>
+		<div class="form-group">
+			<ul *ngIf="listFriends">
+				<li *ngFor="let friend of listFriends; let i = index" >
+					<div class="row mb-2">	
+				    	<div class="col">
+							{{ friend.name}}
+						</div>
+				    	<div class="col text-right">
+							<button type="button" class="btn-sm btn-success" (click)="addPlayer(friend)" *ngIf="!listFriendAdded.includes(friend.uid)">INVITAR</button>
+							<button type="button" class="btn-sm btn-danger" (click)="remPlayer(friend)" *ngIf="listFriendAdded.includes(friend.uid)">QUITAR</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<hr>
+		<button type="submit" class="btn btn-block btn-success" [disabled]="game.categories.length < 1 || game.players.length < 1">
+			CREAR JUEGO!
+		</button>
+		<button type="button" class="btn btn-block btn-danger">
+			CANCELAR
+		</button>
+	</form>	
+</div>
