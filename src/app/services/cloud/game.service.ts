@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../models/user.model';
-import { GameModel,PlayerConnected, Round, RoundPlayer } from '../../models/game.model';
+import { GameModel,PlayerConnected, Round, RoundPlayer, PlayerRevision, Player } from '../../models/game.model';
 import { RoundService } from './round.service';
 import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
@@ -14,13 +14,14 @@ export class GameService {
 
   createGame(game:GameModel){
   	//If repeated should delete old information
-  	return this.afs.collection<GameModel>('game').doc<GameModel>(game.owner).set(game).then(
+  	return this.afs.collection<GameModel>('game').doc<GameModel>(game.uid).set(game).then(
   		(success) => {
   					//create rounds
   					game.players.forEach(
   						(player) => {
-  									let roundId:string = game.owner + "_" + player.uid;
-  									let round:Round = {uid:roundId, name:player.name, uidGame:game.owner, uidPlayer:player.uid, roundPlayer:[]};
+
+  									let roundId:string = game.uid + "_" + player.uid;
+  									let round:Round = {uid:roundId, name:player.name, uidGame:game.uid, uidPlayer:player.uid, roundPlayer:[]};
 
   									for(let i=0; i < game.rounds; i++){
 										let roundPlayer:RoundPlayer = {
@@ -32,8 +33,19 @@ export class GameService {
 										}
 
 	  									game.categories.forEach(
-	  										(category) => {	  											
-	  											roundPlayer.categories.push({name:category, value:""});
+	  										(category) => {	  
+	  											let listPlayerRevision:PlayerRevision[] = [];
+
+	  											game.players.forEach(
+	  												(pyr) => {
+	  													if(pyr.uid != player.uid){
+	  														listPlayerRevision.push({uid:pyr.uid, name:pyr.name, photo:pyr.photo, approved:true})
+	  													}
+	  												}
+	  											);
+
+
+	  											roundPlayer.categories.push({name:category, value:"", revision:listPlayerRevision});
 	  										}
 	  									);  								
 
@@ -55,6 +67,10 @@ export class GameService {
   	return this.afs.collection<GameModel>('game').doc<GameModel>(uid).valueChanges();
   }
 
+  listUserGames(player:Player){
+  	return this.afs.collection<GameModel>('game', ref =>  ref.where("players","array-contains", player)).valueChanges();		
+  }
+
   updateGame(game:GameModel, status:string){
   	game.status = (status == 'online' || status == 'revision' || status == 'finished') ? status : game.status;
 
@@ -68,7 +84,24 @@ export class GameService {
   	}
 
   	//console.log(game);
-  	return this.afs.collection<GameModel>('game').doc<GameModel>(game.owner).update(game);
+  	return this.afs.collection<GameModel>('game').doc<GameModel>(game.uid).update(game);
+  }
+
+  deleteGame(game:GameModel){
+  	//Delete rounds associated
+
+  	this.afs.collection<Round>('round', ref => ref.where("uidGame","==",game.uid)).valueChanges().subscribe(
+  		(rounds:Round[]) => {
+  							rounds.forEach(
+  								(round:Round) => {
+  									this.afs.collection<Round>('round').doc<Round>(round.uid).delete();
+  								}		
+  							);
+
+  		}
+  	);
+
+  	return this.afs.collection<GameModel>('game').doc<GameModel>(game.uid).delete();
   }
 
 }

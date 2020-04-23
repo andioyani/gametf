@@ -1,19 +1,76 @@
 <div *ngIf="game" class="container">
 
 	<div *ngIf="round && game.status != 'finished'">
-		<h2>{{ game.letters[game.current] }}</h2>
+		<h2 class="text-center">Ronda {{game.current+1}}/{{game.rounds}} Letra: {{ game.letters[game.current] }}</h2>
 
 		<div *ngIf="game.status == 'revision'">
-			<ul>
-				<li *ngFor="let player of roundsPlayers">
-					{{ player.uidPlayer }}
-					<ul>
-						<li *ngFor="let categoryPlayer of player.roundPlayer[game.current].categories">
-							{{ categoryPlayer.name }}: {{ categoryPlayer.value }}
+ 
+
+				<div class="container" *ngFor="let player of roundsPlayers">
+					
+					<ul class="list-group mb-2">
+						<li class="list-group-item bg-info" >
+							<h3 class="text-center">{{ player.name }}</h3>					
+						</li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let categoryPlayer of player.roundPlayer[game.current].categories; let catIndex = index">
+
+
+							<div class="container">
+								<span class="text-center"><strong>{{ categoryPlayer.name }}</strong></span>
+								<div class="row">							    
+								     <div class="col mt-2 mb-2">	
+								     		<span class="badge badge-danger badge-pill" *ngIf="!categoryPlayer.value">
+								     			<i class="fas fa-times" aria-hidden="true"></i>
+								     		</span> {{ categoryPlayer.value || '-'}} 
+								    </div>
+								</div>
+								<table class="table" *ngIf="categoryPlayer.value">
+									<thead class="thead-light">
+										<tr>
+											<th colspan="2">Jugador</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let revision of categoryPlayer.revision; let usrIndex = index">
+											<td>{{ revision.name }} 
+												<span class="badge badge-primary badge-pill"><i class="fas fa-thumbs-up" aria-hidden="true" *ngIf="revision.approved" ></i></span>
+												<span class="badge badge-danger badge-pill"><i class="fas fa-thumbs-down" aria-hidden="true" *ngIf="!revision.approved"></i></span>
+											</td>
+
+											<td class="text-right" *ngIf="revision.uid == userId">
+												<button type="button" class="btn btn-sm btn-outline-danger" *ngIf="revision.approved" (click)="revisionApprove(player, catIndex, usrIndex)">
+													Desaprobar <i class="far fa-times-circle" ></i>
+												</button>
+												<button type="button" class="btn btn-sm btn-outline-success" *ngIf="!revision.approved" (click)="revisionApprove(player, catIndex, usrIndex)">
+													Aprobar <i class="far fa-check-circle" ></i>
+												</button>
+
+
+											</td>
+
+											<td class="text-right" *ngIf="revision.uid != userId">
+												<span class="badge badge-primary badge-pill"><i class="fas fa-thumbs-up" aria-hidden="true" *ngIf="revision.approved" ></i></span>    
+												<span class="badge badge-danger badge-pill"><i class="fas fa-thumbs-down" aria-hidden="true" *ngIf="!revision.approved"></i></span>  </td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+						<!--
+							<span class="badge badge-primary badge-pill" *ngIf="categoryPlayer.value  && player.uidPlayer != userId">
+								<i class="fas fa-thumbs-up" *ngFor="let revision of categoryPlayer.revision"></i>
+								<i class="fas fa-thumbs-down"></i>
+							</span>
+
+							<span class="badge badge-danger badge-pill" *ngIf="!categoryPlayer.value">
+								<i class="fas fa-times" ></i>
+							</span>
+							 -->
+
 						</li>
 					</ul>
-				</li>
-			</ul>
+				</div>
 			<button class="btn btn-block btn-success" type="button" (click)="approve()" [disabled]="userApproved()" >CONTINUAR </button>
 		</div>
 

@@ -1,8 +1,9 @@
 import { User } from './user.model';
 
 export interface GameModel{
+	uid:string;
 	current:number;
-	letters:string[];
+	letters:string[];	
 	rounds:number;
 	categories:string[];
 	players:Player[];
@@ -40,7 +41,15 @@ export interface RoundPlayer{
 	finishedFirst:boolean;
 }
 
+export interface PlayerRevision{
+	uid:string;
+	name:string;
+	photo:string;
+	approved:boolean;
+}
+
 export interface CategoryValue{
 	name:string;
 	value:string;
+	revision:PlayerRevision[]
 }

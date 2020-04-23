@@ -7,6 +7,7 @@ import { GameService } from '../../services/cloud/game.service';
 import { User } from '../../models/user.model';
 import { NgForm } from '@angular/forms'; 
 import { Router } from '@angular/router';
+import {Md5} from 'ts-md5/dist/md5';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,15 @@ export class HomeComponent implements OnInit, OnDestroy {
                                 userDoc.friends.forEach(
                                     (friend:User) => {this.listFriends.push(friend);}
                                 );
-                                
+                                this.playerUser = {uid:userDoc.uid, name:userDoc.name, photo:userDoc.photo};                                
+
+                                this.gamesData = this.gameService.listUserGames(this.playerUser).subscribe(
+                                    ( list:GameModel[] ) => {
+                                                              console.log(logged);
+                                                              this.listGames = list;
+                                                               
+                                    }
+                                );                          
               }
             );
             
@@ -38,15 +47,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   loggedData = null;
   userData = null;
+  gamesData = null;
 
+  playerUser:Player = null;
   letters:string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
   lettersRemoved:string[] = [];
-  private userId:string = null;
+  userId:string = null;
   private userName:string = null;
   private userPhoto:string = null;
   listFriends:User[] = [];
   listFriendAdded:string[] = [];
   category:string = null;
+  listGames:GameModel[];
 
   game:GameModel=null;
   selectedLetters:string[]=null;
@@ -60,10 +72,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     //this.listFriends.unsubscribe();
     this.userData.unsubscribe();
     this.loggedData.unsubscribe();
+    this.gamesData.unsubscribe();
   }
 
   create(){
-    this.game = {current:0, rounds:this.letters.length, owner:this.userId, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
+    let id:string = Md5.hashStr(this.userId + new Date().toTimeString()).toString();
+    this.game = {uid:id, current:0, rounds:this.letters.length, owner:this.userId, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
   }
 
   removeElement(){
@@ -212,7 +226,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.gameService.createGame(this.game).then(
       (success) => {
                 Swal.close(); 
-                this.router.navigate([`/round/${this.game.owner}`]);
+                this.router.navigate([`/round/${this.game.uid}`]);
       }
     ).catch(
        (err) => {
@@ -228,5 +242,41 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log(this.game);
   }
 
+  cancelar(){
+      this.game = null; 
+  }
+
+  deleteGame(game:GameModel){
+    Swal.fire({
+      title: 'Eliminar juego?',
+      text: "Se borrarán todos los datos, desea continuar?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+
+      if (result.value) {
+        this.gameService.deleteGame(game).then(
+          (success) => {
+                        Swal.fire(
+                          'Listo!',
+                          'El juego fue eliminado.',
+                          'success'
+                        )
+          }
+        ).catch(
+          (error) => {
+                      console.log(  error);
+          }
+        );
+      }
+    })
+
+
+
+  }
 
 }

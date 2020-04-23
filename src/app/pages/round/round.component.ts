@@ -4,7 +4,7 @@ import  Swal  from 'sweetalert2';
 import { UserService } from '../../services/cloud/user.service';
 import { GameService } from '../../services/cloud/game.service';
 import { RoundService } from '../../services/cloud/round.service';
-import { GameModel, PlayerConnected, RoundPlayer, CategoryValue, Round } from '../../models/game.model';
+import { GameModel, PlayerConnected, RoundPlayer, CategoryValue, Round, Player } from '../../models/game.model';
 import { AuthService } from '../../services/auth.service';
 import { NgForm } from '@angular/forms'; 
 
@@ -37,13 +37,15 @@ export class RoundComponent implements OnInit, OnDestroy {
   private roundData = null;
   private gameData = null;
   private loggedData = null;
-  private userId = null;
+  
   private compareData = null;
-
+  
+  userId = null;
   round:Round = null;
   roundPlayer:RoundPlayer = null;
   startGame = false;
   roundsPlayers = null;
+
 
   game:GameModel = null;
 
@@ -58,6 +60,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 	        (logged) => {
 	          if(logged){  
 	            this.userId = logged.uid;
+
 		   		this.gameData = this.gameService.getGameData(this.id).subscribe(
 		   			(game:GameModel) => {	
 
@@ -110,14 +113,14 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   				this.startGame = startGame;
 
 		   				if(startGame){	
-		   					this.roundData = this.roundService.get(this.game.owner +"_"+ this.userId).subscribe(
+		   					this.roundData = this.roundService.get(this.game.uid +"_"+ this.userId).subscribe(
 		   						(round:Round ) => {
 		   									this.round = round;	
 		   									console.log(this.round);		
 		   								}
 		   					);
 
-		   					this.compareData = this.roundService.getCompare(this.game.owner).subscribe(
+		   					this.compareData = this.roundService.getCompare(this.game.uid).subscribe(
 		   						(roundsPlayers) => {
 		   											this.roundsPlayers = roundsPlayers
 		   											console.log(this.roundsPlayers);
@@ -183,6 +186,18 @@ export class RoundComponent implements OnInit, OnDestroy {
 		);
 
   		return response;
+  	}
+
+  	revisionApprove(round:Round, index:number, player:number){
+  		let status = round.roundPlayer[this.game.current].categories[index].revision[player].approved;
+
+
+		round.roundPlayer[this.game.current].categories[index].revision[player].approved = (status) ? false : true;
+
+		this.roundService.create(round);
+
+  		//console.log();
+  		//console.log();
   	}
 
 }
