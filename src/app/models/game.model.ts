@@ -16,6 +16,7 @@ export interface GameModel{
 
 export interface PlayerConnected{
 	uid:string;
+	name:string;
 	status:boolean;
 }
 
@@ -30,6 +31,7 @@ export interface Round{
 	uidGame:string;
 	uidPlayer:string;
 	name:string;
+	points:number;
 	roundPlayer:RoundPlayer[];
 }
 
@@ -51,5 +53,6 @@ export interface PlayerRevision{
 export interface CategoryValue{
 	name:string;
 	value:string;
+	points:number;
 	revision:PlayerRevision[]
 }

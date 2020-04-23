@@ -13,6 +13,26 @@ export class GameService {
   constructor(private afs: AngularFirestore, private roundService:RoundService) { }
 
   createGame(game:GameModel){
+
+
+    let rounds:string[] = [];
+    let letters = game.letters.toString();
+    letters = letters.replace(/,/g, "");
+    console.log(letters);
+    console.log(letters.length);
+
+    for(let i=0; i<game.rounds;i++){
+      let randomLetter = Math.floor(Math.random() * letters.length);
+      let letter = letters.charAt(randomLetter);
+      letters = letters.replace(letter, "");
+      
+      rounds.push(letter);
+
+      //this.roundService.create(game, round);
+    }
+
+    game.letters = rounds;
+
   	//If repeated should delete old information
   	return this.afs.collection<GameModel>('game').doc<GameModel>(game.uid).set(game).then(
   		(success) => {
@@ -21,7 +41,7 @@ export class GameService {
   						(player) => {
 
   									let roundId:string = game.uid + "_" + player.uid;
-  									let round:Round = {uid:roundId, name:player.name, uidGame:game.uid, uidPlayer:player.uid, roundPlayer:[]};
+  									let round:Round = {uid:roundId, name:player.name, points:0, uidGame:game.uid, uidPlayer:player.uid, roundPlayer:[]};
 
   									for(let i=0; i < game.rounds; i++){
 										let roundPlayer:RoundPlayer = {
@@ -45,7 +65,7 @@ export class GameService {
 	  											);
 
 
-	  											roundPlayer.categories.push({name:category, value:"", revision:listPlayerRevision});
+	  											roundPlayer.categories.push({name:category, value:"", revision:listPlayerRevision, points:0});
 	  										}
 	  									);  								
 
@@ -75,10 +95,10 @@ export class GameService {
   	game.status = (status == 'online' || status == 'revision' || status == 'finished') ? status : game.status;
 
   	if(status == 'revision'){
-		game.revision.filter(
-			function(item, i){
-				game.revision[i].status = false;
-			}
+  		game.revision.filter(
+  			function(item, i){
+  				game.revision[i].status = false;
+  			}
 		);
 
   	}

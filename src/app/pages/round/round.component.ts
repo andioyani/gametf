@@ -4,9 +4,10 @@ import  Swal  from 'sweetalert2';
 import { UserService } from '../../services/cloud/user.service';
 import { GameService } from '../../services/cloud/game.service';
 import { RoundService } from '../../services/cloud/round.service';
-import { GameModel, PlayerConnected, RoundPlayer, CategoryValue, Round, Player } from '../../models/game.model';
+import { GameModel, PlayerConnected, RoundPlayer, CategoryValue, Round, Player, PlayerRevision } from '../../models/game.model';
 import { AuthService } from '../../services/auth.service';
 import { NgForm } from '@angular/forms'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-round',
@@ -20,7 +21,8 @@ export class RoundComponent implements OnInit, OnDestroy {
   				private route: ActivatedRoute, 
   				private gameService: GameService, 
   				private roundService: RoundService, 
-  				private userService: UserService) { 
+  				private userService: UserService,
+  				private router:Router) { 
 
 	    Swal.fire({
 	       allowOutsideClick: false,
@@ -64,6 +66,22 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   		this.gameData = this.gameService.getGameData(this.id).subscribe(
 		   			(game:GameModel) => {	
 
+		   				Swal.close();
+
+					    Swal.fire({
+					       allowOutsideClick: false,
+					       icon: 'info',
+					       text: 'Esperando que se conecten los demas jugadores',
+					       confirmButtonText:'Volver al inicio'
+					       //text: 'Esperando a los demás jugadores...'
+					    }).then((result) => {
+						  if (result.value) {
+						  	console.log("Bye bye birdie");
+						  	this.router.navigate(['/']);
+						  }
+						});
+					    //Swal.showLoading()
+
 		   				this.game = game;
 		   				let i = 0;
 		   				let startGame = true;
@@ -101,6 +119,30 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   						if((this.game.current+1) >= this.game.rounds){
 		   							statusGame = "finished";
+									let main = this;
+									
+		   							//Calcular puntajes
+		   							this.roundsPlayers.forEach(
+		   								(roundPlayer:Round) => {
+		   										let id = roundPlayer.uid;
+		   										let points = 0;
+		   										let roundSave:Round = roundPlayer;
+
+		   										roundPlayer.roundPlayer.forEach(
+		   											(round:RoundPlayer) => {
+		   												round.categories.forEach(
+		   													(roundCat:CategoryValue)=>{
+		   														points+=roundCat.points;
+		   													}
+		   												);
+		   											}
+		   										);
+
+		   										roundSave.points = points;
+		   										this.roundService.create(roundSave);		   										
+		   								}
+		   							);
+
 		   						}
 		   						else{
 									this.game.current++;
@@ -123,13 +165,43 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   					this.compareData = this.roundService.getCompare(this.game.uid).subscribe(
 		   						(roundsPlayers) => {
 		   											this.roundsPlayers = roundsPlayers
-		   											console.log(this.roundsPlayers);
+		   											
 		   										}
 		   					);
 
 
 		   					Swal.close();
 
+		   					if(this.game.status == 'online'){
+								let timerInterval
+								Swal.fire({
+								  title: 'Preparados!',
+								  html: 'La ronda comienza en <b></b> segundos.',
+								  timer: 5000,
+								  timerProgressBar: true,
+								  onBeforeOpen: () => {
+								    Swal.showLoading()
+								    timerInterval = setInterval(() => {
+								      const content = Swal.getContent()
+								      if (content) {
+								        const b = content.querySelector('b')
+								        if (b) {
+								          var seconds =	((Swal.getTimerLeft() % 60000) / 1000).toFixed(0)
+								          b.textContent = seconds.toString()
+								        }
+								      }
+								    }, 100)
+								  },
+								  onClose: () => {
+								    clearInterval(timerInterval)
+								  }
+								}).then((result) => {
+								  /* Read more about handling dismissals below */
+								  if (result.dismiss === Swal.DismissReason.timer) {
+								    console.log('I was closed by the timer')
+								  }
+								})
+			   					}
 		   				}     
 		   			}
 		   		);   	            	           
@@ -139,16 +211,48 @@ export class RoundComponent implements OnInit, OnDestroy {
   }
 
 	changeValue(){
+		let i = 0;
+		this.round.roundPlayer[this.game.current].categories.forEach(
+			(roundCategory:CategoryValue) => {											
+											if(roundCategory.value && roundCategory.value.trim().length > 1 && roundCategory.value.replace(" ","").length > 1 ){
+												this.round.roundPlayer[this.game.current].categories[i].points = 10;
+											}
+											else{
+												this.round.roundPlayer[this.game.current].categories[i].value = null;	
+											}
+
+											i++;
+			}
+		);	
+
 		this.roundService.create(this.round);
-		console.log("Change");
 	}
 
   ngOnDestroy(){
-  	this.routeSubscribe.unsubscribe();
-  	this.gameData.unsubscribe();
-  	this.loggedData.unsubscribe();
-  	this.roundData.unsubscribe();
-  	this.compareData.unsubscribe();
+  	if(this.routeSubscribe)
+  		this.routeSubscribe.unsubscribe();
+  	if(this.gameData)
+  		this.gameData.unsubscribe();  	
+  	if(this.loggedData)
+	  	this.loggedData.unsubscribe();
+  	if(this.roundData)
+	  	this.roundData.unsubscribe();
+  	if(this.compareData)
+  		this.compareData.unsubscribe();
+
+  	let i = 0;
+	this.game.connected.forEach(
+		(conn) => {
+
+			if(conn.uid == this.userId  ){
+				this.game.connected[i].status = false;
+				this.gameService.updateGame(this.game, null);
+			}
+
+			i++;
+		}
+	);	
+
   }
 
   onSubmit(form:NgForm){
@@ -172,14 +276,14 @@ export class RoundComponent implements OnInit, OnDestroy {
   }
 
 	userApproved(){
+		console.log("Testeando");
+
 		let main = this;
 		let response = false;
 
 		this.game.revision.filter(
 			function(item, i){
-				
 				if(item.uid == main.userId && item.status ){
-					console.log(item);
 					response = true;
 				}
 			}
@@ -191,8 +295,26 @@ export class RoundComponent implements OnInit, OnDestroy {
   	revisionApprove(round:Round, index:number, player:number){
   		let status = round.roundPlayer[this.game.current].categories[index].revision[player].approved;
 
-
 		round.roundPlayer[this.game.current].categories[index].revision[player].approved = (status) ? false : true;
+
+		let players:number = 0;
+		let playersApprove:number = 0;
+		let playersDissapprove:number = 0;
+
+		round.roundPlayer[this.game.current].categories[index].revision.forEach(
+			(playersRevision:PlayerRevision) => {
+												players++;
+
+												if(playersRevision.approved){
+													playersApprove++;
+												}
+												else{
+													playersDissapprove++;
+												}
+			}
+		);
+
+		round.roundPlayer[this.game.current].categories[index].points = (playersDissapprove >= players) ? 0 : 10;		
 
 		this.roundService.create(round);
 

@@ -4,7 +4,9 @@
 		<h2 class="text-center">Ronda {{game.current+1}}/{{game.rounds}} Letra: {{ game.letters[game.current] }}</h2>
 
 		<div *ngIf="game.status == 'revision'">
- 
+ 				<div class="alert alert-danger" role="alert" *ngIf="userApproved()">
+				  Esperando la confirmación del resto de los jugadores
+				</div>
 
 				<div class="container" *ngFor="let player of roundsPlayers">
 					
@@ -17,7 +19,7 @@
 
 
 							<div class="container">
-								<span class="text-center"><strong>{{ categoryPlayer.name }}</strong></span>
+								<span class="text-center"><strong>{{ categoryPlayer.name }} ( {{ categoryPlayer.points }} Pts.)</strong></span>
 								<div class="row">							    
 								     <div class="col mt-2 mb-2">	
 								     		<span class="badge badge-danger badge-pill" *ngIf="!categoryPlayer.value">
@@ -34,8 +36,10 @@
 									<tbody>
 										<tr *ngFor="let revision of categoryPlayer.revision; let usrIndex = index">
 											<td>{{ revision.name }} 
-												<span class="badge badge-primary badge-pill"><i class="fas fa-thumbs-up" aria-hidden="true" *ngIf="revision.approved" ></i></span>
-												<span class="badge badge-danger badge-pill"><i class="fas fa-thumbs-down" aria-hidden="true" *ngIf="!revision.approved"></i></span>
+												<span *ngIf="revision.uid == userId">
+													<span class="badge badge-primary badge-pill"><i class="fas fa-thumbs-up" aria-hidden="true" *ngIf="revision.approved" ></i></span>
+													<span class="badge badge-danger badge-pill"><i class="fas fa-thumbs-down" aria-hidden="true" *ngIf="!revision.approved"></i></span>
+												</span>
 											</td>
 
 											<td class="text-right" *ngIf="revision.uid == userId">
@@ -45,8 +49,6 @@
 												<button type="button" class="btn btn-sm btn-outline-success" *ngIf="!revision.approved" (click)="revisionApprove(player, catIndex, usrIndex)">
 													Aprobar <i class="far fa-check-circle" ></i>
 												</button>
-
-
 											</td>
 
 											<td class="text-right" *ngIf="revision.uid != userId">
@@ -56,21 +58,10 @@
 									</tbody>
 								</table>
 							</div>
-
-						<!--
-							<span class="badge badge-primary badge-pill" *ngIf="categoryPlayer.value  && player.uidPlayer != userId">
-								<i class="fas fa-thumbs-up" *ngFor="let revision of categoryPlayer.revision"></i>
-								<i class="fas fa-thumbs-down"></i>
-							</span>
-
-							<span class="badge badge-danger badge-pill" *ngIf="!categoryPlayer.value">
-								<i class="fas fa-times" ></i>
-							</span>
-							 -->
-
 						</li>
 					</ul>
 				</div>
+
 			<button class="btn btn-block btn-success" type="button" (click)="approve()" [disabled]="userApproved()" >CONTINUAR </button>
 		</div>
 
@@ -94,6 +85,31 @@
 	
 	<div *ngIf="game.status == 'finished'">			
 			<h3>Juego Finalizado!</h3>
+
+			<table class="table">
+
+				<tbody *ngFor="let data of roundsPlayers">
+					<tr>
+						<td class="text-center" colspan="2"><h3>{{ data.name }}</h3></td>
+					</tr>
+
+					<tr *ngFor="let round of data.roundPlayer">
+						<td>{{ round.letter }}</td>
+						<td>
+							<p *ngFor="let cats of round.categories"><b>{{ cats.name }}:</b> {{ cats.value}} ({{ cats.points }} pts.)</p>
+						</td>						
+					</tr >
+
+					<tr class="bg-light mb-2" style="height: 50px">
+						<th >Puntaje</th>
+						<td ><b>{{ data.points }}</b></td>
+					</tr>
+
+				</tbody>
+			</table>
+
+			<!--
+
 			<ul>
 				<li *ngFor="let data of roundsPlayers">
 					<h3>{{ data.name }}</h3>
@@ -102,14 +118,14 @@
 							<h4>{{ round.letter }}</h4>
 							<ul>
 								<li *ngFor="let cats of round.categories">
-									<b>{{ cats.name }}:</b> {{ cats.value}}
+									<b>{{ cats.name }}:</b> {{ cats.value}} ({{ cats.points }} pts.)
 								</li>
 							</ul>
 						</li>
 					</ul>
 					<hr>
 				</li>
-			</ul>
+			</ul>-->
 
 	</div>
 

@@ -20,9 +20,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loggedData = this.auth.isLoggedIn().subscribe(
         (logged) => {
           if(logged){  
-            this.userId = logged.uid;
-            this.userName = logged.displayName;
-            this.userPhoto = logged.photoURL;
+            //this.userId = logged.uid;
+            //this.userName = logged.displayName;
+            //this.userPhoto = logged.photoURL;
 
             this.userData = this.userService.getUserData(logged.uid).valueChanges().subscribe(
               (userDoc:User) => {
@@ -52,9 +52,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   playerUser:Player = null;
   letters:string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
   lettersRemoved:string[] = [];
-  userId:string = null;
-  private userName:string = null;
-  private userPhoto:string = null;
+  //userId:string = null;
+  //private userName:string = null;
+  //private userPhoto:string = null;
   listFriends:User[] = [];
   listFriendAdded:string[] = [];
   category:string = null;
@@ -76,8 +76,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   create(){
-    let id:string = Md5.hashStr(this.userId + new Date().toTimeString()).toString();
-    this.game = {uid:id, current:0, rounds:this.letters.length, owner:this.userId, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
+    let id:string = Md5.hashStr(this.playerUser.uid + new Date().toTimeString()).toString();
+    this.game = {uid:id, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
   }
 
   removeElement(){
@@ -203,13 +203,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     if(form.invalid){ return; }
     
     this.game.letters = this.letters;   
-    this.game.players.push({uid:this.userId, name:this.userName, photo:this.userPhoto});
+    this.game.players.push(this.playerUser);
 
     let main = this;
 
     this.game.players.forEach(
         (player:Player) => {
-                            let playerConnected:PlayerConnected = {uid:player.uid, status:false};
+                            let playerConnected:PlayerConnected = {uid:player.uid, name:player.name, status:false};
                             main.game.connected.push(playerConnected);
                             main.game.revision.push(playerConnected);
         }
