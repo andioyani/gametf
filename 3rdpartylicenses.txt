@@ -568,6 +568,9 @@ SOFTWARE.
 
 
 
+ts-md5
+MIT
+
 tslib
 Apache-2.0
 Apache License
