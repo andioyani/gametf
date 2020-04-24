@@ -4,7 +4,7 @@ import  Swal  from 'sweetalert2';
 import { UserService } from '../../services/cloud/user.service';
 import { GameService } from '../../services/cloud/game.service';
 import { RoundService } from '../../services/cloud/round.service';
-import { GameModel, PlayerConnected, RoundPlayer, CategoryValue, Round, Player, PlayerRevision } from '../../models/game.model';
+import { GameModel, PlayerWinner, PlayerConnected, RoundPlayer, CategoryValue, Round, Player, PlayerRevision } from '../../models/game.model';
 import { AuthService } from '../../services/auth.service';
 import { NgForm } from '@angular/forms'; 
 import { Router } from '@angular/router';
@@ -65,21 +65,24 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   		this.gameData = this.gameService.getGameData(this.id).subscribe(
 		   			(game:GameModel) => {	
-
+		   				console.log(game);
 		   				Swal.close();
 
-					    Swal.fire({
-					       allowOutsideClick: false,
-					       icon: 'info',
-					       text: 'Esperando que se conecten los demas jugadores',
-					       confirmButtonText:'Volver al inicio'
-					       //text: 'Esperando a los demás jugadores...'
-					    }).then((result) => {
-						  if (result.value) {
-						  	console.log("Bye bye birdie");
-						  	this.router.navigate(['/']);
-						  }
-						});
+		   				if(this.game && this.game.status != "finished"){
+						    Swal.fire({
+						       allowOutsideClick: false,
+						       icon: 'info',
+						       text: 'Esperando que se conecten los demas jugadores',
+						       confirmButtonText:'Volver al inicio'
+						       //text: 'Esperando a los demás jugadores...'
+						    }).then((result) => {
+							  if (result.value) {
+							  	console.log("Bye bye birdie");
+							  	this.router.navigate(['/']);
+							  }
+							});
+		   				}
+
 					    //Swal.showLoading()
 
 		   				this.game = game;
@@ -120,7 +123,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   						if((this.game.current+1) >= this.game.rounds){
 		   							statusGame = "finished";
 									let main = this;
-									
+
 		   							//Calcular puntajes
 		   							this.roundsPlayers.forEach(
 		   								(roundPlayer:Round) => {
@@ -154,7 +157,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   				this.startGame = startGame;
 
-		   				if(startGame){	
+		   				if(this.game && (startGame || this.game.status == 'finished') ){	
 		   					this.roundData = this.roundService.get(this.game.uid +"_"+ this.userId).subscribe(
 		   						(round:Round ) => {
 		   									this.round = round;	
@@ -164,7 +167,38 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   					this.compareData = this.roundService.getCompare(this.game.uid).subscribe(
 		   						(roundsPlayers) => {
-		   											this.roundsPlayers = roundsPlayers
+		   											this.roundsPlayers = roundsPlayers;
+
+		   											if(this.game.status == 'finished'){
+		   												let winner:PlayerWinner[] = [];
+		   												let maxPoints = 0;
+
+														this.roundsPlayers.forEach(
+															(player) => {																
+																console.log(player);
+																
+																if(player.points > maxPoints){
+																	maxPoints = player.points;
+																}
+
+															}
+														)
+														
+														this.roundsPlayers.filter(function(item, i){
+															if(item.points == maxPoints){
+																winner.push({name:item.name, photo:item.photo, points:item.points});
+															}
+														});												
+
+		   												console.log(winner);														
+														
+														if(!this.game.winner){		
+															this.game.winner = winner;
+															this.gameService.updateGame(this.game, null);
+														}
+														
+		   											}
+
 		   											
 		   										}
 		   					);
@@ -318,8 +352,6 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		this.roundService.create(round);
 
-  		//console.log();
-  		//console.log();
   	}
 
 }

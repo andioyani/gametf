@@ -2,6 +2,7 @@ import { User } from './user.model';
 
 export interface GameModel{
 	uid:string;
+	title:string;
 	current:number;
 	letters:string[];	
 	rounds:number;
@@ -12,6 +13,13 @@ export interface GameModel{
 	connected:PlayerConnected[];
 	revision:PlayerConnected[];
 	status:string;
+	winner:PlayerWinner[];
+}
+
+export interface PlayerWinner{
+	name:string;
+	photo:string;
+	points:number;
 }
 
 export interface PlayerConnected{
@@ -31,6 +39,7 @@ export interface Round{
 	uidGame:string;
 	uidPlayer:string;
 	name:string;
+	photo:string;	
 	points:number;
 	roundPlayer:RoundPlayer[];
 }

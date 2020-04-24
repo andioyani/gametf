@@ -5,6 +5,12 @@
 			#newForm="ngForm" *ngIf="game"
 			(ngSubmit)="onSubmit(newForm)"
 		>
+			<div class="form-group">
+				<div class="input-group">
+					<input type="text" class="form-control" id="title" name="title" placeholder="Título" [(ngModel)]="game.title" required>
+				</div>
+			</div>
+
 			<div class="form-row">
 			    <div class="form-group col-md-6">
 					<div class="row mb-2">
@@ -50,13 +56,7 @@
 					</div>
 			    </div>
 			</div>
-			<!--
-			<div class="form-group">
-				<div class="custom-control custom-switch">
-				  <input type="checkbox" class="custom-control-input" id="stop" name="stop" [(ngModel)]="game.stop">
-				  <label class="custom-control-label" for="stop">Primero en terminar finaliza la ronda</label>
-				</div>
-			</div>-->
+
 			<hr>
 			<h3>Categorías</h3>
 			<hr>
@@ -102,40 +102,49 @@
 			<button type="submit" class="btn btn-block btn-success" [disabled]="game.categories.length < 1 || game.players.length < 1">
 				CREAR JUEGO!
 			</button>
-			<button type="button" class="btn btn-block btn-danger" (click)="cancelar()">
+			<button type="button" class="btn btn-block btn-danger" (click)="cancelar()" [routerLink]="['/']">
 				CANCELAR
 			</button>
 		</form>	
 	</div>
 
-	<div class="animated fadeInRight mb-1" *ngIf="!game">		
+
+	<div class="animated fadeInRight mb-1 container" *ngIf="!game">	
 			<button class="btn btn-primary btn-block mt-1 mb-1" type="button" (click)="create()">NUEVO JUEGO</button>
-			<table class="table">
-				<tbody *ngIf="listGames">
-					<tr *ngFor="let myGame of listGames">
-						<td><i class="fas fa-circle game-status-{{ myGame.status }}"></i></td>		
-						<td class="text-center">{{ (myGame.current + 1) }}/{{ myGame.rounds }}</td>
-						<td class="text-right">
-							<img src="{{ player.photo || 'https://png.pngtree.com/png-vector/20190225/ourmid/pngtree-question-mark-vector-icon-png-image_702552.jpg'}}" *ngFor="let player of myGame.players" 
-							alt="{{ player.name }}" title="{{ player.name }}"
-							style="width: 25px"/>
-						</td>		
-						<td class="text-right">
+			<div *ngIf="listGames">
+				<div class="card" *ngFor="let myGame of listGames">
+				  
+				  <div class="card-body">
+				    <h5 class="card-title"><i class="fas fa-circle game-status-{{ myGame.status }}"></i> {{ myGame.title }}</h5>
+				    <p class="card-text"> {{ (myGame.current + 1) }} de {{ myGame.rounds }} rondas completadas.</p>
 							<button type="button" *ngIf="playerUser.uid == myGame.owner" class="btn btn-outline-danger btn-sm mr-1" (click)="deleteGame(myGame)">
 										Eliminar {{ userId }}<i class="fas fa-trash-alt"></i>
 							</button>
 
-							<button type="button" *ngIf="userId == myGame.owner" class="btn btn-outline-primary btn-sm mr-1" [disabled]="myGame.status != 'finished'">
-										Renovar <i class="fas fa-sync"></i>
+							<button type="button" *ngIf="myGame.status == 'finished' && playerUser.uid == myGame.owner" class="btn btn-outline-primary btn-sm mr-1" [disabled]="myGame.status != 'finished'" [routerLink]="['/game/', myGame.uid]">
+										Reiniciar <i class="fas fa-sync"></i>
 							</button>
 
-							<button type="button" class="btn btn-outline-success btn-sm" [disabled]="myGame.status == 'finished' || !myGame.uid" [routerLink]="['/round/', myGame.uid]">
+							<button *ngIf="myGame.status == 'finished'" type="button" class="btn btn-outline-primary btn-sm" [routerLink]="['/round/', myGame.uid]">
+								Resultados <i class="fas fa-poll"></i>
+							</button>
+
+							<button *ngIf="myGame.status != 'finished'" type="button" class="btn btn-outline-success btn-sm"  [routerLink]="['/round/', myGame.uid]">
 										Comenzar <i class="far fa-play-circle"></i>
 							</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+				  </div>
+				  <ul class="list-group list-group-flush">
+				    <li class="list-group-item">
+						<img style="width: 35px;border-radius: 50%;" src="{{ player.photo || 'https://png.pngtree.com/png-vector/20190225/ourmid/pngtree-question-mark-vector-icon-png-image_702552.jpg'}}" *ngFor="let player of myGame.players" 
+							alt="{{ player.name }}" title="{{ player.name }}">
+				</li>
+				    
+				    
+				  </ul>
+
+				</div>
+
+			</div>
 	</div>
 
 </div>

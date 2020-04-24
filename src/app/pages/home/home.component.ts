@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { GameModel, PlayerConnected, Player } from '../../models/game.model';
+import { ActivatedRoute } from '@angular/router';
 import  Swal  from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/cloud/user.service';
@@ -16,14 +17,16 @@ import {Md5} from 'ts-md5/dist/md5';
 
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private auth:AuthService,private router:Router, private userService:UserService, private gameService:GameService) { 
+  constructor(
+              private auth:AuthService,
+              private route: ActivatedRoute, 
+              private router:Router, 
+              private userService:UserService, 
+              private gameService:GameService
+              ) { 
     this.loggedData = this.auth.isLoggedIn().subscribe(
         (logged) => {
           if(logged){  
-            //this.userId = logged.uid;
-            //this.userName = logged.displayName;
-            //this.userPhoto = logged.photoURL;
-
             this.userData = this.userService.getUserData(logged.uid).valueChanges().subscribe(
               (userDoc:User) => {
                                 userDoc.friends.forEach(
@@ -52,32 +55,63 @@ export class HomeComponent implements OnInit, OnDestroy {
   playerUser:Player = null;
   letters:string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
   lettersRemoved:string[] = [];
-  //userId:string = null;
-  //private userName:string = null;
-  //private userPhoto:string = null;
   listFriends:User[] = [];
   listFriendAdded:string[] = [];
   category:string = null;
   listGames:GameModel[];
+  routeSubscribe=null;
+  gameData = null;
 
   game:GameModel=null;
   selectedLetters:string[]=null;
   removedLetters:string[]=null;
 
   ngOnInit(){
+      this.routeSubscribe = this.route.params.subscribe(params => {
+           let idGame = params['id'];
+           
+           if(idGame){
+              this.gameData = this.gameService.getGameData(idGame).subscribe(
+                  (game:GameModel) => { 
+                                        this.game = game;
+                                        this.game.current = 0;
+                                        this.game.connected = [];
+                                        this.game.revision = [];
+                                        //this.game.players = [];
+                                        this.game.status = 'online';
+                                        this.game.winner = null;
+
+                                        this.game.players.forEach(
+                                            (friend) => {
+                                                          this.listFriendAdded.push(friend.uid);
+                                            }
+                                        );  
+
+                                      }
+              );
+           }
+       });
 
   }
 
   ngOnDestroy(){
     //this.listFriends.unsubscribe();
-    this.userData.unsubscribe();
-    this.loggedData.unsubscribe();
-    this.gamesData.unsubscribe();
+    if(this.userData)
+      this.userData.unsubscribe();
+    if(this.loggedData)
+      this.loggedData.unsubscribe();
+    if(this.gamesData)
+      this.gamesData.unsubscribe();
+    if(this.routeSubscribe)
+      this.routeSubscribe.unsubscribe();
+    if(this.gameData)
+      this.gameData.unsubscribe();
   }
 
   create(){
     let id:string = Md5.hashStr(this.playerUser.uid + new Date().toTimeString()).toString();
-    this.game = {uid:id, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
+    this.game = {uid:id, title:"", winner:null, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
+    this.game.players.push(this.playerUser);  
   }
 
   removeElement(){
@@ -198,12 +232,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form:NgForm){
-    console.log(form);
 
     if(form.invalid){ return; }
     
     this.game.letters = this.letters;   
-    this.game.players.push(this.playerUser);
 
     let main = this;
 
@@ -226,7 +258,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.gameService.createGame(this.game).then(
       (success) => {
                 Swal.close(); 
-                this.router.navigate([`/round/${this.game.uid}`]);
+                this.game = null;
+                this.router.navigate([`/`]);
       }
     ).catch(
        (err) => {

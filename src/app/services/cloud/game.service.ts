@@ -13,8 +13,19 @@ export class GameService {
   constructor(private afs: AngularFirestore, private roundService:RoundService) { }
 
   createGame(game:GameModel){
-
-
+    console.log(game);
+    this.afs.collection('round', ref => ref.where('uidGame', '==', game.uid)).get().subscribe(
+        (doc) => {
+                    doc.docs.forEach(
+                        (round) => {
+                          this.afs.collection('round').doc(round.id).delete();
+                          //console.log(round.id);
+                        }
+                    );
+                    // 
+        }
+    );
+    
     let rounds:string[] = [];
     let letters = game.letters.toString();
     letters = letters.replace(/,/g, "");
@@ -27,21 +38,17 @@ export class GameService {
       letters = letters.replace(letter, "");
       
       rounds.push(letter);
-
-      //this.roundService.create(game, round);
     }
 
     game.letters = rounds;
 
-  	//If repeated should delete old information
   	return this.afs.collection<GameModel>('game').doc<GameModel>(game.uid).set(game).then(
   		(success) => {
-  					//create rounds
   					game.players.forEach(
   						(player) => {
 
   									let roundId:string = game.uid + "_" + player.uid;
-  									let round:Round = {uid:roundId, name:player.name, points:0, uidGame:game.uid, uidPlayer:player.uid, roundPlayer:[]};
+  									let round:Round = {uid:roundId, name:player.name, photo:player.photo, points:0, uidGame:game.uid, uidPlayer:player.uid, roundPlayer:[]};
 
   									for(let i=0; i < game.rounds; i++){
 										let roundPlayer:RoundPlayer = {
@@ -81,6 +88,7 @@ export class GameService {
   	).catch(
   		(error) => {console.log(error)}
   	);
+    
   }
 
   getGameData(uid:string){
