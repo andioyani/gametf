@@ -1,10 +1,8 @@
 <div class="limiter animated fadeInRight">
   <div class="container">
-      <form 
-          #emailForm="ngForm"
-          (ngSubmit)="onSubmit(emailForm)">
-      </form>  
-
+        <form 
+            #emailForm="ngForm"
+            (ngSubmit)="onSubmit(emailForm)">
    
                     <span class="text-danger animated fadeIn" 
                      *ngIf=" emailForm.submitted && emailForm.controls['email'].errors"
@@ -58,8 +56,10 @@
                             Volver al login
                         </button>
                     </div>
-    
+                        </form>  
+
             </div>
+
     </div>
     
     
