@@ -1,26 +1,15 @@
 <div class="limiter animated fadeInLeft">
-    <div class="container-login100">
-        <div class="wrap-login100 p-t-25 p-b-45">
-            <form 
-                #emailForm="ngForm"
-                class="login100-form validate-form flex-sb flex-w" (ngSubmit)="onSubmit(emailForm)">
-
-                <div class="text-center" style="
-                    width: 100%;
-                ">
-                <img src="https://firebasestorage.googleapis.com/v0/b/tutifruttiquarantine.appspot.com/o/Logo%20dibujo%20y%20nombre.png?alt=media&amp;token=4d98c37c-fe12-48b1-8f1b-132e6af78c3a" style="
-                    width: 130px;
-                ">
-                </div>
-                <span class="login100-form-title p-b-25">
-                    Login
-                </span>
-
+  <div class="container">    
+    <section class="nes-container is-dark is-centered with-title mt-3" >
+    <h3 class="title">Ingresar</h3>
+    <form 
+        #emailForm="ngForm"
+        (ngSubmit)="onSubmit(emailForm)">    
+        <div class="input-group">
                 <span class="text-danger animated fadeIn" 
                 *ngIf=" emailForm.submitted && emailForm.controls['email'].errors"
-                >El correo es obligatorio</span>
-                <div class="wrap-input100 m-b-8">
-                    <input class="input100" 
+                >El correo es obligatorio</span>                          
+                    <input class="nes-input is-dark" 
                            type="email" 
                            name="email" 
                            placeholder="Email"
@@ -28,15 +17,13 @@
                            required
                            [(ngModel)]="user.email"
                            >
-
-                    <span class="focus-input100"></span>
-                </div>
-                
+        </div>
+        
+        <div class="input-group">
                 <span class="text-danger animated fadeIn" 
                 *ngIf=" emailForm.submitted && emailForm.controls['password'].errors">                
                 La contraseña debe contener al menos 8 letras</span>
-                <div class="wrap-input100 m-b-4" data-validate = "Password is required">
-                    <input class="input100"
+                    <input class="nes-input is-dark"
                            type="password" 
                            name="password" 
                            placeholder="Password"
@@ -44,43 +31,36 @@
                            minlength="8" 
                            [(ngModel)]="user.password"
                            >
-                    <span class="focus-input100"></span>
-                </div>
-                <div class="container-login100-form-btn m-t-8">
-                    <button class="login100-form-btn" type="submit">
-                        Ingresar
-                    </button>
-                </div>
-
-                <div class="container-login100-form-btn m-t-8">
-                    <button class="login100-form-btn btn-success" type="button" [routerLink]="['/registro']">
-                        Crear Usuario
-                    </button>
-                </div>
-
-                <div class="flex-sb-m w-full p-t-3 p-b-5">
-                    <div class="contact100-form-checkbox">
-                </div>
-
-                </div>
-
-             
-                <hr style="border: 1px solid gray; width: 100%"/>
-   
-
-                <div class="container-login100-form-btn m-t-8 ">
-                    <button class="login100-form-btn btn-danger" type="button" (click)="loginProvider('GOOGLE')">
-                       <i class="fab fa-google-plus mr-1"></i> Ingresar con Google
-                    </button>
-                </div>
-                <div class="container-login100-form-btn m-t-8 ">
-                    <button class="login100-form-btn btn-primary"  type="button" (click)="loginProvider('FACEBOOK')">
-                       <i class="fab fa-facebook-square mr-1"></i> Ingresar con Facebook
-                    </button>
-                </div>
-                
-            </form>
         </div>
-    </div>
+
+        <div class="text-center">
+          <button class="nes-btn is-success" type="submit">
+              Ingresar
+          </button>
+          <button class="nes-btn is-error" type="button" [routerLink]="['/registro']">
+              Crear Usuario
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+
+    <section class="nes-container is-dark is-centered with-title mt-3" >
+      <h3 class="title">Ingresar con redes</h3>
+      <div class="text-center">
+          <button class="nes-btn is-primary" type="button" (click)="loginProvider('FACEBOOK')">
+                <i class="nes-icon facebook is-medium"></i> Ingresar con Facebook
+          </button>
+      </div>
+      <div class="text-center">
+          <button class="nes-btn is-error"  type="button" (click)="loginProvider('GOOGLE')">
+              <i class="nes-icon gmail is-medium"></i> Ingresar con Gmail
+          </button>
+      </div>
+
+    </section>
+  </div>
+
 </div>
 

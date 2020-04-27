@@ -1,3 +1,8 @@
+body{
+	font-family: 'Press Start 2P', cursive;
+	background-color: #202428;
+}
+
 .game-status-online{
 	color:green;
 }
@@ -12,12 +17,21 @@
 
 
 .img-winner{
-	border-radius: 50%;
+	
 	width: 150px;
+	height: 150px;
 }
 
 .img-player-ranking{
-	border-radius: 50%;
+	
 	width: 120px;
 	height: 120px;	
+}
+
+.list-group-item-results{
+	position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    margin-bottom: -1px;    
+    border-bottom: 1px dashed white;
 }

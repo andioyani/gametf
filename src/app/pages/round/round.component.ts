@@ -168,37 +168,6 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   					this.compareData = this.roundService.getCompare(this.game.uid).subscribe(
 		   						(roundsPlayers) => {
 		   											this.roundsPlayers = roundsPlayers;
-
-		   											if(this.game.status == 'finished'){
-		   												let winner:PlayerWinner[] = [];
-		   												let maxPoints = 0;
-
-														this.roundsPlayers.forEach(
-															(player) => {																
-																console.log(player);
-																
-																if(player.points > maxPoints){
-																	maxPoints = player.points;
-																}
-
-															}
-														)
-														
-														this.roundsPlayers.filter(function(item, i){
-															if(item.points == maxPoints){
-																winner.push({name:item.name, photo:item.photo, points:item.points});
-															}
-														});												
-
-		   												console.log(winner);														
-														
-														if(!this.game.winner){		
-															this.game.winner = winner;
-															this.gameService.updateGame(this.game, null);
-														}
-														
-		   											}
-
 		   											
 		   										}
 		   					);
@@ -211,7 +180,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 								Swal.fire({
 								  title: 'Preparados!',
 								  html: 'La ronda comienza en <b></b> segundos.',
-								  timer: 5000,
+								  timer: 1000,
 								  timerProgressBar: true,
 								  onBeforeOpen: () => {
 								    Swal.showLoading()
@@ -290,14 +259,41 @@ export class RoundComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form:NgForm){
-  	//this.game.status = "revision";
-  	this.roundService.create(this.round);
-  	this.gameService.updateGame(this.game, "revision");
+	    Swal.fire({
+	      title: 'Basta para mi!!!',
+	      text: "Seguro de terminar la ronda?",
+	      icon: 'warning',
+	      showCancelButton: true,
+	      confirmButtonColor: '#3085d6',
+	      cancelButtonColor: '#d33',
+	      confirmButtonText: 'Seguro',
+	      cancelButtonText: 'Cancelar'
+	    }).then((result) => {
+
+	      if (result.value) {
+	      	this.roundService.create(this.round);
+  			this.gameService.updateGame(this.game, "revision").then(
+	          (success) => {
+	                        Swal.fire(
+	                          'Listo!',
+	                          'Felicidades!',
+	                          'success'
+	                        )
+	          }
+	        ).catch(
+	          (error) => {
+	                      console.log(  error);
+	          }
+	        );
+	      }
+	      else{
+	      		return ;
+	      }
+	    })  	
   }
 
   approve(){
   	let main = this;
-  	//this.game.status = "online";
   	this.game.revision.filter(
   		function(item, i){
   			if(item.uid == main.userId){
@@ -326,10 +322,41 @@ export class RoundComponent implements OnInit, OnDestroy {
   		return response;
   	}
 
-  	revisionApprove(round:Round, index:number, player:number){
-  		let status = round.roundPlayer[this.game.current].categories[index].revision[player].approved;
+  	revisionStatus(round:Round, index:number){
+  		console.log("REVISION STATUS");
+  		let main = this;
+  		let valueReturn = false;
 
-		round.roundPlayer[this.game.current].categories[index].revision[player].approved = (status) ? false : true;
+  		round.roundPlayer[this.game.current].categories[index].revision.filter(
+  			function(item, i){
+  				console.log("------------------------------");
+  				console.log(item);
+  				if(item.uid == main.userId){
+  					console.log("RETURNS THIS > " + item.approved);
+  					valueReturn = item.approved;
+  				}
+				console.log("------------------------------");  				
+  			}
+  		);
+
+  		return valueReturn;
+  	}
+
+
+  	revisionApprove(round:Round, index:number){
+  		let main = this;
+
+		round.roundPlayer[this.game.current].categories[index].revision.filter(
+			  			function(item, i){
+
+			  				if(item.uid == main.userId){
+	  					  		let status = round.roundPlayer[main.game.current].categories[index].revision[i].approved;
+								round.roundPlayer[main.game.current].categories[index].revision[i].approved = (status) ? false : true;			  					
+			  				}
+			  			}
+			  		);
+
+		//round.roundPlayer[this.game.current].categories[index].revision[player].approved = (status) ? false : true;
 
 		let players:number = 0;
 		let playersApprove:number = 0;

@@ -18,6 +18,10 @@ import { HeaderComponent } from './pages/header/header.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { FriendsComponent } from './pages/friends/friends.component';
 import { RoundComponent } from './pages/round/round.component';
+import { SortplayersPipe } from './pipes/sortplayers.pipe';
+import { GameComponent } from './pages/game/game.component';
+import { MygamesComponent } from './pages/mygames/mygames.component';
+import { RevisionplayersPipe } from './pipes/revisionplayers.pipe';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,11 @@ import { RoundComponent } from './pages/round/round.component';
     HeaderComponent,
     ProfileComponent,
     FriendsComponent,
-    RoundComponent   
+    RoundComponent,
+    SortplayersPipe,
+    GameComponent,
+    MygamesComponent,
+    RevisionplayersPipe   
   ],
   imports: [
     BrowserModule,

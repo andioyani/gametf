@@ -1,18 +1,22 @@
-<div class="m-2 animated fadeInRight">
-	<h1>Buscar amigos</h1>
-	<hr>
+<div class="container animated fadeInLeft" >
 	<div>
-		<ul *ngIf="listUsers && listUsers.length > 0" class="list-group">
-			<li *ngFor="let userFriend of listUsers; let i = index" class="list-group-item d-flex justify-content-between align-items-center">
-				      
-				      {{ userFriend.name }}
-		          <span class="">
-		          	<button type="button" class="btn btn-success" (click)="addFriend(userFriend)" *ngIf="checkFriend(userFriend)">AGREGAR</button>
-		          	<button type="button" class="btn btn-danger" (click)="removeFriend(userFriend)" *ngIf="!checkFriend(userFriend)">QUITAR</button>
-		          </span>
-
-			</li>
-		</ul>
+			<button type="button" class="nes-btn" [routerLink]="['/']"><i class="fas fa-home"></i> Regresar</button>
 	</div>
+		<section class="nes-container is-dark with-title mt-3" >
+		<h3 class="title">Lista de Amigos</h3>
+		<div>
+			<ul *ngIf="listUsers && listUsers.length > 0" class="list-group">
+			<li *ngFor="let userFriend of listUsers; let i = index" class="list-group-item-results d-flex justify-content-between align-items-center">		      
+			      <span class="nes-text is-disabled">{{ userFriend.name }}</span>
+			          <span class="text-right">
+			          	<button type="button" class="btn btn-success" (click)="addFriend(userFriend)" *ngIf="checkFriend(userFriend)">+</button>
+			          	<button type="button" class="btn btn-danger" (click)="removeFriend(userFriend)" *ngIf="!checkFriend(userFriend)">-</button>
+			          </span>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+
 
 </div>

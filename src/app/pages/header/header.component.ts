@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 	    this.loggedInData = this.auth.isLoggedIn().subscribe(
 	      (logged) => {
 	        if(logged){
+	        	
 	        	this.userServiceData = this.userService.getUserData(logged.uid).valueChanges().subscribe(
 	        		(user:User) => {
 	        			this.user = user;
