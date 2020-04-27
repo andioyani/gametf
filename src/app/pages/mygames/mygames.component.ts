@@ -22,7 +22,7 @@ export class MygamesComponent implements OnInit, OnDestroy {
 	          private router:Router, 
 	          private userService:UserService, 
 	          private gameService:GameService
-		) { 
+	          		) { 
 				this.loggedData = this.auth.isLoggedIn().subscribe(
 				    (logged) => {
 				      if(logged){  
@@ -51,7 +51,8 @@ export class MygamesComponent implements OnInit, OnDestroy {
 	gamesData = null;
 	playerUser:Player = null;
 	listGames:GameModel[];
-
+	invitationId:string = "";
+	
   ngOnInit(): void {
   }
 

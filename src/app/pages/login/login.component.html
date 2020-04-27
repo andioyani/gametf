@@ -1,7 +1,5 @@
 <div class="limiter animated fadeInLeft">
   <div class="container">    
-    <section class="nes-container is-dark is-centered with-title mt-3" >
-    <h3 class="title">Ingresar</h3>
     <form 
         #emailForm="ngForm"
         (ngSubmit)="onSubmit(emailForm)">    
@@ -19,7 +17,7 @@
                            >
         </div>
         
-        <div class="input-group">
+        <div class="input-group mt-2 mb-2 ">
                 <span class="text-danger animated fadeIn" 
                 *ngIf=" emailForm.submitted && emailForm.controls['password'].errors">                
                 La contraseña debe contener al menos 8 letras</span>
@@ -33,34 +31,22 @@
                            >
         </div>
 
-        <div class="text-center">
-          <button class="nes-btn is-success" type="submit">
+        <div >
+          <button class="nes-btn is-success btn-block" type="submit">
               Ingresar
           </button>
-          <button class="nes-btn is-error" type="button" [routerLink]="['/registro']">
-              Crear Usuario
+          <button class="nes-btn is-primary btn-block" type="button" (click)="loginProvider('FACEBOOK')">
+                <i class="nes-icon facebook is-small"></i> Facebook
+          </button>
+          <button class="nes-btn is-error btn-block"  type="button" (click)="loginProvider('GOOGLE')">
+              <i class="nes-icon gmail is-small"></i> Gmail
+          </button>
+          <button class="nes-btn is-warning btn-block" type="button" [routerLink]="['/registro']">
+              Registrarse
           </button>
         </div>
 
       </form>
-    </section>
-
-
-    <section class="nes-container is-dark is-centered with-title mt-3" >
-      <h3 class="title">Ingresar con redes</h3>
-      <div class="text-center">
-          <button class="nes-btn is-primary" type="button" (click)="loginProvider('FACEBOOK')">
-                <i class="nes-icon facebook is-medium"></i> Ingresar con Facebook
-          </button>
-      </div>
-      <div class="text-center">
-          <button class="nes-btn is-error"  type="button" (click)="loginProvider('GOOGLE')">
-              <i class="nes-icon gmail is-medium"></i> Ingresar con Gmail
-          </button>
-      </div>
-
-    </section>
-  </div>
 
 </div>
 

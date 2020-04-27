@@ -1,7 +1,6 @@
 <div class="container animated fadeInLeft" >	
 	<form 
-		#newForm="ngForm" 
-		(ngSubmit)="onSubmit(newForm)"
+		#newForm="ngForm" 		
 		class="mt-3" 
 		*ngIf="game"
 	>
@@ -81,9 +80,6 @@
 
 	<section class="nes-container is-dark with-title mt-3"  >
 		<h3 class="title">Jugadores</h3>
-		<div class="mt-3 mb-3 ">
-			Seleccione los amigos que jugarán.
-		</div>
 
 		<div class="form-group">
 			<ul *ngIf="listFriends">
@@ -103,10 +99,10 @@
 
 	</section>
 		<div class="text-center">
-			<button type="submit" class="nes-btn is-success" [disabled]="game.categories.length < 1 || game.players.length < 2">
+			<button type="button" (click)="onSubmit(newForm)" class="nes-btn is-success btn-block" [disabled]="game.categories.length < 1 || game.players.length < 1">
 				CREAR JUEGO!
 			</button>
-			<button type="button" class="nes-btn is-error" [routerLink]="['/']">
+			<button type="button" class="nes-btn is-error btn-block" [routerLink]="['/']">
 				CANCELAR
 			</button>		
 		</div>

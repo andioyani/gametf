@@ -61,7 +61,15 @@ export class RegistroComponent implements OnInit, OnDestroy {
 
         //UPDATE USER
 
-        this.router.navigateByUrl('/home');
+        //this.router.navigateByUrl('/home');
+        if(localStorage.getItem("invitation")){
+          this.router.navigate(['/invitation', localStorage.getItem("invitation")]);                      
+          localStorage.clear();
+        }
+        else{
+          this.router.navigate(['/']);                      
+        }
+        
       })
       .catch(
       (err) => {

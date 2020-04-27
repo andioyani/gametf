@@ -10,11 +10,12 @@
 
 
 			<div *ngFor="let player of roundsPlayers | revisionplayers:userId">
-				<section class="nes-container is-dark is-centered mt-3"  >
-					<h2 class="nes-text is-warning">
+				<div class="text-center" 
+				>
+					<h3 class="nes-text is-warning">
 					  {{ player.name }}
-					</h2>				
-				</section>
+					</h3>													
+				</div>
 
 				<div class="mb-2" *ngFor="let categoryPlayer of player.roundPlayer[game.current].categories; let catIndex = index">
 					<section class="nes-container is-dark with-title mt-3">
@@ -79,18 +80,17 @@
 	
 	<div *ngIf="game.status == 'finished'" class="container">	
 		<h3 class="text-center mt-3 mb-2 text-danger">GAME OVER</h3>
-		<div>
+		<div class="text-center" style="border-bottom: 1px dashed white ">
 			<button type="button" class="nes-btn" [routerLink]="['/']"><i class="fas fa-home"></i> Regresar</button>
 		</div>
 
-		<section class="nes-container is-dark with-title mt-3"  >
-			<h3 class="title">Resultados</h3>
 		    <ul class="list-group">
-		        <li class="list-group-item-results d-flex justify-content-between align-items-center text-warning" *ngFor="let data of roundsPlayers | sortplayers ">
-		    		<span>{{ data.position }} {{ data.name }} <i class="nes-icon is-small star" *ngIf="data.position == 1"></i></span> <span>{{ data.points }} Pts.</span>
+		        <li class="list-group-item-results text-center text-warning" *ngFor="let data of roundsPlayers | sortplayers ">
+		    		<i class="nes-icon trophy is-large" *ngIf="data.position == 1"></i><br>
+		    		<span> {{ data.name }} </span><br>
+		    		<span>{{ data.points }} Pts.</span>
 		        </li>
 		    </ul>
-		</section>	
 
 		 <!-- <div class="row">
 		    <div class="col-sm-3" *ngFor="let data of roundsPlayers | sortplayers ">

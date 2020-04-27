@@ -35,9 +35,13 @@ export class GameComponent implements OnInit, OnDestroy {
 				                            );
 				                            this.playerUser = {uid:userDoc.uid, name:userDoc.name, photo:userDoc.photo};                                
 				                            console.log(this.playerUser);
-			                            	let id:string = Md5.hashStr(this.playerUser.uid + new Date().toTimeString()).toString();
+
+			                            	//let id:string = Md5.hashStr(this.playerUser.uid + new Date().toTimeString()).toString();
+			                            	let id:string = this.generateUID();
+
 										    this.game = {uid:id, title:"", winner:null, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
 									    	this.game.players.push(this.playerUser);  
+									    	console.log(this.game);
 
 				          }
 				        );
@@ -92,6 +96,19 @@ export class GameComponent implements OnInit, OnDestroy {
 
 	}
 
+	generateUID():string {
+	    // I generate the UID from two parts here 
+	    // to ensure the random number provide enough bits.
+	    let firstPart = (Math.random() * 46656) | 0;
+	    let secondPart = (Math.random() * 46656) | 0;
+	    
+	    let firstPartString = ("000" + firstPart.toString(36)).slice(-3);
+	    let secondPartString = ("000" + secondPart.toString(36)).slice(-3);
+	    
+	    return firstPartString + secondPartString;
+	}
+
+
 	ngOnDestroy(){
 	    if(this.userData)
 	      this.userData.unsubscribe();
@@ -140,7 +157,7 @@ export class GameComponent implements OnInit, OnDestroy {
 	      (success) => {
 	                Swal.close(); 
 	                this.game = null;
-	                this.router.navigate([`/`]);
+	                this.router.navigate([`/mygames`]);
 	      }
 	    ).catch(
 	       (err) => {

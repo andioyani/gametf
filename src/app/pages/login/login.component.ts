@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserModel } from '../../models/user.model';
 import { NgForm } from '@angular/forms'; 
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute  } from '@angular/router';
 import { UserService } from '../../services/cloud/user.service';
 import { User } from '../../models/user.model';
 
@@ -15,14 +15,25 @@ import  Swal  from 'sweetalert2';
 export class LoginComponent implements OnInit, OnDestroy {
 	user:UserModel;
   loggedIn;
-  constructor(private auth:AuthService, private router: Router, private userService:UserService) { }
+  constructor(  private route: ActivatedRoute,
+                private auth:AuthService, 
+                private router: Router, 
+                private userService:UserService) { }
 
   ngOnInit() {
 
     this.loggedIn = this.auth.isLoggedIn().subscribe(
       (logged) => {
-        if(logged)
-          this.router.navigateByUrl("/home");
+        if(logged){
+          if(localStorage.getItem("invitation")){
+            console.log("Redirect to invitation");
+            this.router.navigateByUrl('/invitation/' + localStorage.getItem("invitation"));                                  
+            localStorage.clear();
+          }
+          else{
+            this.router.navigate(['/home']);                      
+          }
+        }
       }
     );       
 
@@ -49,7 +60,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.log(response);
           Swal.close();
 
-          this.router.navigate(['/home']);        
         })
       .catch(
         (err) => {
@@ -77,7 +87,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                     };
 
           this.userService.createUser(user);
-          this.router.navigate(["/home"]); 
+          
+          
         }
     ).catch(
         (err) => { 

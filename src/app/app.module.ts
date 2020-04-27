@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-//import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
@@ -22,6 +21,7 @@ import { SortplayersPipe } from './pipes/sortplayers.pipe';
 import { GameComponent } from './pages/game/game.component';
 import { MygamesComponent } from './pages/mygames/mygames.component';
 import { RevisionplayersPipe } from './pipes/revisionplayers.pipe';
+import { InvitationComponent } from './pages/invitation/invitation.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +36,8 @@ import { RevisionplayersPipe } from './pipes/revisionplayers.pipe';
     SortplayersPipe,
     GameComponent,
     MygamesComponent,
-    RevisionplayersPipe   
+    RevisionplayersPipe,
+    InvitationComponent   
   ],
   imports: [
     BrowserModule,

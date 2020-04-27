@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { take, map, tap } from 'rxjs/operators';
 
@@ -16,17 +15,19 @@ export class AuthGuard implements CanActivate {
 
   user = null;
 
-  canActivate(): Observable<boolean> | Promise<boolean> | boolean{
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean{
     return this.auth.isLoggedIn().pipe(
                                         take(1),
                                         map(user => !!user),
                                         tap( loggedIn => {
                                                             if(!loggedIn){
                                                                         this.router.navigate(['/login']);
-                                                                        localStorage.removeItem("showNavigation");
-                                                            }
-                                                            else{
-                                                              localStorage.setItem("showNavigation", "true")
+                                                                        
+                                                                        if(state.url.includes('/invitation/')){                                                                             
+                                                                             localStorage.setItem("invitation", state.url.replace('/invitation/', '') )
+                                                                        }
+                                                                        
+                                                                        return false;
                                                             }
                                                           }
                                         )
