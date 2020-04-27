@@ -381,4 +381,25 @@ export class RoundComponent implements OnInit, OnDestroy {
 
   	}
 
+  	exit(){
+
+	    Swal.fire({
+	      title: 'Abandonar el juego',
+	      text: "Desea continuar?",
+	      icon: 'warning',
+	      showCancelButton: true,
+	      confirmButtonColor: '#3085d6',
+	      cancelButtonColor: '#d33',
+	      confirmButtonText: 'Abandonar',
+	      cancelButtonText: 'Cancelar'
+	    }).then((result) => {
+
+	      if (result.value) {
+			  	this.router.navigate(['/mygames']);
+	      }
+	    })
+
+
+  	}
+
 }
