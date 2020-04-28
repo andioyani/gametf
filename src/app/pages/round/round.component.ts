@@ -171,7 +171,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 								Swal.fire({
 								  title: 'Preparados!',
 								  html: 'La ronda comienza en <b></b> segundos.',
-								  timer: 1000,
+								  timer: 3000,
 								  timerProgressBar: true,
 								  onBeforeOpen: () => {
 								    Swal.showLoading()

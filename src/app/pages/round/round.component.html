@@ -122,7 +122,10 @@
 								<input type="text" class="nes-input is-dark" name="{{ category.name }}" id="{{ category.name }}" placeholder="{{ category.name }}" [(ngModel)]="category.value" autofocus  (change)="changeValue()">
 							</div>
 						</div>		
-						<button class="nes-btn btn-block is-success"  type="submit" > BASTA PARA MI!</button>
+						<div class="alert alert-danger" role="alert" *ngIf="waiting">
+							Hay jugadores sin conexión, podrá finalizar la partida cuando estén todos conectados
+						</div>
+						<button class="nes-btn btn-block is-success"  type="submit" [disabled]="waiting"> BASTA PARA MI!</button>
 
 					</form>
 
