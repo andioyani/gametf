@@ -2,6 +2,10 @@ body{
 	font-family: 'Press Start 2P', cursive;
 	background-color: #202428;
 }
+/*
+	background-color: #202428;
+
+*/
 
 .game-status-online{
 	color:green;
@@ -34,4 +38,23 @@ body{
     padding: .75rem 1.25rem;
     margin-bottom: -1px;    
     border-bottom: 1px dashed white;
+}
+
+.home-pic{
+	width: 175px;	
+	border: 4px outset white;
+	padding: 5px;
+}
+
+.mygames-pic{
+	width: 75px;
+	padding: 3px;
+}
+
+.pic-border-success{
+	border: 2px outset #92cb41;
+}
+
+.pic-border-error{
+	border: 2px outset #e66d54;
 }

@@ -33,6 +33,7 @@ export class GameComponent implements OnInit, OnDestroy {
 				                            userDoc.friends.forEach(
 				                                (friend:User) => {this.listFriends.push(friend);}
 				                            );
+				                            
 				                            this.playerUser = {uid:userDoc.uid, name:userDoc.name, photo:userDoc.photo};                                
 				                            console.log(this.playerUser);
 
@@ -138,7 +139,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
 	    this.game.players.forEach(
 	        (player:Player) => {
-	                            let playerConnected:PlayerConnected = {uid:player.uid, name:player.name, status:false};
+	                            let playerConnected:PlayerConnected = {uid:player.uid, name:player.name, status:false, photo:player.photo};
 	                            main.game.connected.push(playerConnected);
 	                            main.game.revision.push(playerConnected);
 	        }

@@ -27,6 +27,7 @@ export interface PlayerConnected{
 	uid:string;
 	name:string;
 	status:boolean;
+	photo: string;
 }
 
 export interface Player{

@@ -57,7 +57,7 @@ export class InvitationComponent implements OnInit, OnDestroy {
 								   				if(game){
 								   					if(game.current == 0){
 								   						let player:Player = {uid:userDoc.uid, name:userDoc.name, photo:userDoc.photo};
-								   						let playerConnected:PlayerConnected = {uid:userDoc.uid, name:userDoc.name, status:false};
+								   						let playerConnected:PlayerConnected = {uid:userDoc.uid, name:userDoc.name, status:false, photo:player.photo};
 								   						let create = true;
 
 								   						game.players.filter(function(item, i){

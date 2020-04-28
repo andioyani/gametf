@@ -1,17 +1,26 @@
 <div class="container animated fadeInLeft" >
 
 	<div class="text-center">
-			<button type="button" class="nes-btn" [routerLink]="['/']"><i class="fas fa-home"></i> Regresar</button>
+		  <button type="button" class="nes-btn" [routerLink]="['/']"><i class="fas fa-home"></i> Regresar</button>
 	</div>
+
+	<section class="nes-container is-dark with-title mt-3" *ngIf="ownGames < 4" >
+		<h3 class="title">Crear juego</h3>
+	     <button class="nes-btn is-success btn-block" type="button" [routerLink]="['/game']">Nuevo Juego</button>
+	</section>
 
 	<section class="nes-container is-dark with-title mt-3"  >
 		<h3 class="title">Buscar juego</h3>
 		<input type="text" class="nes-input " name="invitationId" id="invitationId" [(ngModel)]="invitationId" placeholder="ID del juego">		
-		<button class="nes-btn is-warning" type="button" [routerLink]="['/invitation',  invitationId]">BUSCAR</button>			
+		<button class="nes-btn is-warning btn-block" type="button" [routerLink]="['/invitation',  invitationId]" [disabled]="!invitationId" [ngClass]="!invitationId ? 'is-disabled' : ''">BUSCAR</button>			
 
 	</section>
 
-	<div *ngIf="listGames">
+	<div *ngIf="listGames && listGames.length > 0">
+		<div class="text-center mt-3">
+			<h3 class="nes-text is-primary">Mis juegos</h3>
+		</div>
+
 		<section class="nes-container is-dark with-title mt-3" *ngFor="let myGame of listGames" >
 			<h3 class="title">{{ myGame.title }}</h3>
 	
@@ -32,6 +41,11 @@
 					</li>
 
 					<li class="list-group-item-results" *ngFor="let player of myGame.connected">
+						<!--
+						<div>
+							<img src="{{ player.photo }}" class="mygames-pic" [ngClass]="player.status ? 'pic-border-success' : 'pic-border-error'">
+						</div>
+						-->
 						<span class="nes-text" [ngClass]="player.status ? 'is-success' : 'is-error'">{{ player.name }}</span>
 					</li>
 
@@ -45,15 +59,15 @@
 						</button>
 
 						<button type="button" *ngIf="playerUser.uid == myGame.owner" class="nes-btn btn-sm btn-block is-warning mr-1"  [routerLink]="['/game/', myGame.uid]">
-							Reiniciar <i class="fas fa-sync"></i>
+							Reiniciar 
 						</button>
 
 						<button *ngIf="myGame.status == 'finished'" type="button" class="nes-btn btn-sm is-primary btn-block" [routerLink]="['/round/', myGame.uid]">
-							Resultados <i class="fas fa-poll"></i>
+							Resultados
 						</button>
 
 						<button *ngIf="myGame.status != 'finished'" type="button" class="nes-btn btn-sm is-success btn-block"  [routerLink]="['/round/', myGame.uid]">
-							Comenzar <i class="far fa-play-circle"></i>
+							Jugar! 
 						</button>
 
 					</li>

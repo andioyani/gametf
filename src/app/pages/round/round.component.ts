@@ -112,6 +112,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   							statusGame = "finished";
 									let main = this;
 
+									/*
 		   							//Calcular puntajes
 		   							this.roundsPlayers.forEach(
 		   								(roundPlayer:Round) => {
@@ -133,7 +134,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   										this.roundService.create(roundSave);		   										
 		   								}
 		   							);
-
+									*/
 		   						}
 		   						else{
 									this.game.current++;
@@ -207,9 +208,13 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 	changeValue(){
 		let i = 0;
+		let letterCurrent = this.game.letters[this.game.current];
+
 		this.round.roundPlayer[this.game.current].categories.forEach(
-			(roundCategory:CategoryValue) => {											
-											if(roundCategory.value && roundCategory.value.trim().length > 1 && roundCategory.value.replace(" ","").length > 1 ){
+			(roundCategory:CategoryValue) => {	
+											let value = (roundCategory.value) ? roundCategory.value.trim() : null;
+
+											if(value && value.length > 1 && value.replace(" ","").length > 1 && value.charAt(0).toUpperCase() == letterCurrent ){
 												this.round.roundPlayer[this.game.current].categories[i].points = 10;
 											}
 											else{

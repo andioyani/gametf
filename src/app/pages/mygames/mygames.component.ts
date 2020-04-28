@@ -36,6 +36,17 @@ export class MygamesComponent implements OnInit, OnDestroy {
 				                                ( list:GameModel[] ) => {
 				                                                          console.log(logged);
 				                                                          this.listGames = list;
+																		  this.ownGames = 0;
+				                                                          
+				                                                          this.listGames.forEach(
+				                                                          		(game:GameModel) => {
+				                                                          			if(game.owner == logged.uid){
+																						this.ownGames++;
+				                                                          			}
+				                                                          		}
+				                                                          );
+
+				                                                          console.log(this.ownGames);
 				                                                           
 				                                }
 				                            );                          
@@ -46,6 +57,7 @@ export class MygamesComponent implements OnInit, OnDestroy {
 				    });
 	}
 
+	ownGames = 0;
 	loggedData = null;
 	userData = null;
 	gamesData = null;

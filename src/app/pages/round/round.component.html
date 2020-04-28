@@ -79,8 +79,8 @@
 					</section>
 
 					<div *ngIf="categoryPlayer.value">
-						<button class="nes-btn btn-block is-error" *ngIf="revisionStatus(player, catIndex)" (click)="revisionApprove(player, catIndex)">DESAPROBAR</button>
-						<button class="nes-btn btn-block is-success" *ngIf="!revisionStatus(player, catIndex)" (click)="revisionApprove(player, catIndex)">APROBAR</button>
+						<button class="nes-btn btn-block is-error" *ngIf="revisionStatus(player, catIndex) && !userApproved()" (click)="revisionApprove(player, catIndex)">DESAPROBAR</button>
+						<button class="nes-btn btn-block is-success" *ngIf="!revisionStatus(player, catIndex) && !userApproved()" (click)="revisionApprove(player, catIndex)">APROBAR</button>
 						<ul class="list-group">
 							<li class="list-group-item-results text-center text-white">
 								VOTACIONES

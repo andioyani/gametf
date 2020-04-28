@@ -1,22 +1,21 @@
 <div class="container animated fadeInLeft" >	
 
 	<div class="animated fadeInRight" *ngIf="playerUser">
+
 		<section class="nes-container is-dark with-title mt-3 ">
 			<h3 class="title">Bienvenido!</h3>
 				<div class="text-center">
 					{{ playerUser.name }}
 				</div>
+
 			  <div class="text-center">
-			     <button class="nes-btn is-success btn-block" type="button" [routerLink]="['/game']">Nuevo Juego</button>
-			  </div>
-			  <div class="text-center">
-			     <button class="nes-btn is-warning btn-block" type="button" [routerLink]="['/mygames']">Mis Juegos</button>
+			     <button class="nes-btn is-success btn-block" type="button" [routerLink]="['/mygames']">Ver Juegos</button>
 			  </div>
 			  <div class="text-center">
 			     <button class="nes-btn is-primary btn-block" type="button" [routerLink]="['/friends']">Amigos</button>
 			  </div>
 			  <div class="text-center">
-			     <button class="nes-btn is-error btn-block" type="button" (click)="logout()">Salir</button>
+			     <button class="nes-btn is-error btn-block" type="button" (click)="logout()">Logout</button>
 			  </div>
 		</section>		
 	</div>
