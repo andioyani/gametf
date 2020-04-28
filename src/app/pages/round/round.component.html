@@ -140,75 +140,42 @@
 	
 	<div *ngIf="game.status == 'finished'" class="container">	
 		<h3 class="text-center mt-3 mb-2 text-danger">GAME OVER</h3>
+    		<div class="text-center">
+    			  <button class="nes-btn is-primary" type="button" *ngIf="!showResults" (click)="showResultsChange(true)">
+					   MOSTRAR RESPUESTAS
+				  </button>
+    			  <button class="nes-btn is-error" type="button" *ngIf="showResults" (click)="showResultsChange(false)">
+					   OCULTAR RESPUESTAS
+				  </button>				  
+    		</div>
 
 		    <ul class="list-group">
-		        <li class="list-group-item-results text-center text-warning" *ngFor="let data of roundsPlayers | sortplayers ">
-		    		<i class="nes-icon trophy is-large" *ngIf="data.position == 1"></i><br>
-		    		<span> {{ data.name }} </span><br>
-		    		<span>{{ data.points }} Pts.</span>
+		        <li class="list-group-item-results text-center " *ngFor="let data of roundsPlayers | sortplayers ">
+		    		<div *ngIf="data.position == 1">
+		    			<i class="nes-icon trophy is-large" ></i>
+		    		</div>
+		    		<div class="nes-text is-warning"> {{ data.name }} </div>
+		    		<div class="nes-text is-warning">{{ data.points }} Pts.</div>
+		    		<div *ngIf="showResults">
+						<div *ngFor="let roundResult of data.roundPlayer ">
+			        		<div class="nes-text text-white bg-primary" style="height: 35px; line-height: 35px">Letra {{ roundResult.letter }}</div>
+
+			        		<div *ngFor="let categoryResult of roundResult.categories" style="border-bottom: 1px solid white">
+			        				<span class="nes-text is-primary">{{ categoryResult.name }}</span>
+			        				<div>
+			        					<span class="nes-text text-white">{{ categoryResult.value || '-'}} ({{ categoryResult.points}} pts.)</span>
+			        				</div>
+			        		</div>
+
+
+			        	</div>
+		    			
+		    		</div>
+
 		        </li>
 		    </ul>
 
-		 <!-- <div class="row">
-		    <div class="col-sm-3" *ngFor="let data of roundsPlayers | sortplayers ">
-				<div class="card mb-3" style="max-width: 20rem;" [ngClass]="data.position == 1 ? 'border-success' : 'border-secondary'">
-				  <div class="card-header text-center" [ngClass]="data.position == 1 ? 'bg-success text-white' : 'bg-light'">
-				  	<i class="fas fa-star text-warning mr-1" *ngIf=" data.position == 1" ></i><b>{{ data.name }}</b></div>
-				  <div class="card-body text-primary text-center" style="height: 235px">
-			      	<img src="{{ data.photo || 'https://pbs.twimg.com/media/CLYEKp1WcAI8Bl5.jpg'}}" class="img-winner" alt="...">	
-			      	<h3 class="card-title mt-2">{{ data.points }} Pts.</h3>			    
-				  </div>
-				</div>
-		    </div>
-		</div>
-		-->
 
-
-			<!--
-			<div class="text-center animated fadeInDown m-3" *ngIf="game.winner">
-			  <h2 *ngIf="game.winner.length == 1" class="text-success">GANADOR</h2>
-			  <h2 *ngIf="game.winner.length > 1" class="text-primary">HAY EMPATE</h2>
-			  
-			  <div *ngFor="let winner of game.winner">
-				  <img src="{{winner.photo || 'https://pbs.twimg.com/media/CLYEKp1WcAI8Bl5.jpg'}}" class="card-img-top img-winner" alt="...">		
-				  <h3>{{winner.name}}</h3>
-				  <h2>{{winner.points}} Pts.</h2>			  	
-			  </div>
-			</div>
-
-		  <div class="col" *ngFor="let data of roundsPlayers | sortplayers ">
-			<hr>		  	
-		    <div class="mt-3">		      
-		      <div class="text-center">
-		      	<img src="{{ data.photo || 'https://pbs.twimg.com/media/CLYEKp1WcAI8Bl5.jpg'}}" [ngClass]="data.position == 1 ? 'img-winner' : 'img-player-ranking'" alt="...">	
-		      </div>
-		      
-		      <div class="">
-		        <h5 class="card-title text-center"><i class="fas fa-star text-warning mr-1" *ngIf=" data.position == 1" ></i>{{ data.name }}</h5>
-		        <p class="card-text text-center">{{ data.points }} Pts.</p>
-		      </div>
-
-		      	<div *ngFor="let round of data.roundPlayer">
-		      		<h2 class="text-center">{{ round.letter }}</h2>
-		      		<ul class="list-group"> 
-		      			<div *ngFor="let cats of round.categories">
-		      			<li class="list-group-item d-flex justify-content-between align-items-center  text-white" [ngClass]="cats.points > 0 ? 'bg-success' : 'bg-danger' ">
-		      				<b>{{ cats.name }}</b>			      				 
-		      			</li>
-		      			<li class="list-group-item d-flex justify-content-between align-items-center">
-		      				{{ cats.value || '-'}}
-							<span class="badge">
-								({{ cats.points }} pts.)	
-							</span>			      				
-		      				
-		      			</li>
-		      			</div>
-		      		</ul>
-		      	</div>
-		    </div>
-		  </div>			-->
-
-		
 
 	</div>
 

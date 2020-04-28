@@ -42,6 +42,7 @@ export class RoundComponent implements OnInit, OnDestroy {
   
   private compareData = null;
   
+  showResults = false;
   userId = null;
   round:Round = null;
   roundPlayer:RoundPlayer = null;
@@ -147,6 +148,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   				this.startGame = startGame;
 
 		   				if(this.game && (startGame || this.game.status == 'finished') ){
+		   					this.showResults = false;
 
 		   					this.roundData = this.roundService.get(this.game.uid +"_"+ this.userId).subscribe(
 		   						(round:Round ) => {
@@ -161,13 +163,13 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   											this.roundsPlayers = roundsPlayers;
 
 		   											this.roundsPlayers.points = 0;
-
+													
 		   											let i = 0;
 
 		   											this.roundsPlayers.forEach(
-		   												(roundPlayer) => {
 
-		   													//console.log(roundPlayer);
+		   												(roundPlayer) => {
+															this.roundsPlayers[i].points = 0;
 		   													
 		   													roundPlayer.roundPlayer.forEach(
 		   														(categoryRound) => {
@@ -231,6 +233,10 @@ export class RoundComponent implements OnInit, OnDestroy {
         });
 	});
   }
+
+	showResultsChange(show:boolean){
+		this.showResults = show;
+	}
 
 	changeValue(){
 		let i = 0;

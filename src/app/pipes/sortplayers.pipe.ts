@@ -17,12 +17,15 @@ export class SortplayersPipe implements PipeTransform {
 
 	  	value.forEach(
 	  		(round) => {
-	  			points.push(round.points);
+	  			if(!points.includes(round.points)){	  				
+	  				points.push(round.points);
+	  			}
 	  		}
 	  	);
 
 		points.sort(function(a, b){return b-a});
 
+		console.log(points);
 
 	  	for( let i=0; i<points.length; i++ ){	  		
 	  		console.log(points[i]);
@@ -30,7 +33,9 @@ export class SortplayersPipe implements PipeTransform {
 		  	value.forEach(
 		  		(round) => {
 	  				if(round.points == points[i]){
-	  					data.push({name:round.name, photo:round.photo, points:round.points, position:i+1});
+	  					let roundAdd = round;
+	  					roundAdd["position"] = i+1;
+	  					data.push(roundAdd);
 	  				}
 		  		}
 		  	);
