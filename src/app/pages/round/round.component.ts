@@ -159,7 +159,33 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   					this.compareData = this.roundService.getCompare(this.game.uid).subscribe(
 		   						(roundsPlayers) => {
 		   											this.roundsPlayers = roundsPlayers;
-		   											
+
+		   											this.roundsPlayers.points = 0;
+
+		   											let i = 0;
+
+		   											this.roundsPlayers.forEach(
+		   												(roundPlayer) => {
+
+		   													//console.log(roundPlayer);
+		   													
+		   													roundPlayer.roundPlayer.forEach(
+		   														(categoryRound) => {
+
+		   															categoryRound.categories.forEach(
+		   																(categoryValue) => {
+		   																	this.roundsPlayers[i].points+= categoryValue.points;
+		   																}
+		   															);
+
+		   															
+		   														}
+		   													);
+															i++;
+		   												}
+		   											);
+
+		   											console.log(roundsPlayers);
 		   										}
 		   					);
 							

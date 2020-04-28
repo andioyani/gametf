@@ -35,7 +35,9 @@ export class MygamesComponent implements OnInit, OnDestroy {
 				                            this.gamesData = this.gameService.listUserGames(this.playerUser).subscribe(
 				                                ( list:GameModel[] ) => {
 				                                                          console.log(logged);
+				                                                          
 				                                                          this.listGames = list;
+				                                                          console.log(this.listGames);
 																		  this.ownGames = 0;
 				                                                          
 				                                                          this.listGames.forEach(

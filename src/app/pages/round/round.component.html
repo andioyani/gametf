@@ -4,6 +4,11 @@
 			<button type="button" class="nes-btn" (click)="exit()"><i class="fas fa-home"></i> Salir </button>
 	</div>
 
+
+
+
+	<div *ngIf="round && game.status != 'finished'">
+
 	<div *ngIf="waiting">
 		<section class="nes-container is-dark is-centered with-title">
 			<h3 class="title">Sala de espera</h3>
@@ -17,9 +22,6 @@
 			</ul>
 		</section>		
 	</div>
-
-
-	<div *ngIf="round && game.status != 'finished'">
 
 		<div *ngIf="game.status == 'revision'">
 			<section class="nes-container is-dark is-centered with-title mt-3"  >
