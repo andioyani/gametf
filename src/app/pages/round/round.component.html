@@ -2,7 +2,6 @@
 	<div class="text-center">
 			<button type="button" class="nes-btn" (click)="exit()"><i class="fas fa-home"></i> Regresar</button>
 	</div>
-
 	<div *ngIf="round && game.status != 'finished'">
 
 		<div *ngIf="game.status == 'revision'">
@@ -11,8 +10,36 @@
 				<span class="nes-text is-error">Verifique los resultados de los otros jugadores.</span>
 			</section>
 
+			<div *ngFor="let player of roundsPlayers | revisionplayers:userId:true">
+					<h3 style="margin-top: 45px !important" class="nes-text is-primary text-center">
+					  {{ player.name }}
+					</h3>													
 
-			<div *ngFor="let player of roundsPlayers | revisionplayers:userId">
+				<div class="mb-2" *ngFor="let categoryPlayer of player.roundPlayer[game.current].categories; let catIndex = index">
+					<section class="nes-container is-dark with-title mt-3">
+						<h3 class="title">
+							{{ categoryPlayer.name }}
+						</h3>		    		
+
+						<span class="nes-text is-error"><i class="far fa-check-circle fa-lg" style="color:green" *ngIf="categoryPlayer.value && categoryPlayer.points > 0"></i> 
+						<i class="far fa-times-circle fa-lg" style="color:red" *ngIf="!categoryPlayer.value || categoryPlayer.points == 0"></i> {{ categoryPlayer.value || '-'}} </span>	
+					<div *ngIf="categoryPlayer.value">
+						<ul class="list-group">
+							<li class="list-group-item-results text-center text-white">
+								VOTACIONES
+							</li>
+						    <li class="list-group-item-results d-flex justify-content-between align-items-center" *ngFor="let revision of categoryPlayer.revision; let usrIndex = index">
+						    	<span class="nes-text text-white">{{ revision.name }} </span>
+						    	<span class="text-right"><i class="nes-icon is-medium like" [ngClass]="revision.approved ? '' : 'is-empty'" ></i></span>
+						    </li>
+						</ul>
+					</div>	
+
+					</section>
+				</div>
+			</div>
+
+			<div style="margin-top: 45px !important" *ngFor="let player of roundsPlayers | revisionplayers:userId:false">
 				<div class="text-center" 
 				>
 					<h3 class="nes-text is-warning">
@@ -27,9 +54,9 @@
 						</h3>		    		
 
 						<span class="nes-text is-error"><i class="far fa-check-circle fa-lg" style="color:green" *ngIf="categoryPlayer.value && categoryPlayer.points > 0"></i> 
-						<i class="far fa-times-circle fa-lg" style="color:red" *ngIf="!categoryPlayer.value || categoryPlayer.points == 0"></i> {{ categoryPlayer.value || '-'}} </span>
-						
+						<i class="far fa-times-circle fa-lg" style="color:red" *ngIf="!categoryPlayer.value || categoryPlayer.points == 0"></i> {{ categoryPlayer.value || '-'}} </span>						
 					</section>
+
 					<div *ngIf="categoryPlayer.value">
 						<button class="nes-btn btn-block is-error" *ngIf="revisionStatus(player, catIndex)" (click)="revisionApprove(player, catIndex)">DESAPROBAR</button>
 						<button class="nes-btn btn-block is-success" *ngIf="!revisionStatus(player, catIndex)" (click)="revisionApprove(player, catIndex)">APROBAR</button>
@@ -51,12 +78,16 @@
 	
 			<div class="alert alert-danger" role="alert" *ngIf="userApproved()">
 			  Esperando la confirmación del resto de los jugadores
+			  <ul *ngFor="let playerRevision of game.revision">
+			  	<li *ngIf="playerRevision.uid != userId"><i [ngClass]="playerRevision.status ? 'far fa-check-circle text-success' : 'fas fa-exclamation-circle text-danger'"></i> {{ playerRevision.name }}</li>
+			  </ul>
 			</div>
 
-			<button class="btn btn-block btn-success" type="button" (click)="approve()" [disabled]="userApproved()" >CONTINUAR </button>
+			<button class="nes-btn btn-block is-primary" style="height: 75px !important; margin-top: 25px !important" type="button" (click)="approve()" [disabled]="userApproved()" >PROXIMA RONDA </button>
 		</div>
 
 		<div *ngIf="game.status == 'online'" class="animated fadeInLeft">
+
 			<section class="nes-container is-dark with-title mt-3"  >
 				<h3 class="title">Ronda {{game.current+1}}/{{game.rounds}}</h3>
 					<div class="text-center">Letra: {{ game.letters[game.current] }}</div>
@@ -70,7 +101,7 @@
 								<input type="text" class="nes-input is-dark" name="{{ category.name }}" id="{{ category.name }}" placeholder="{{ category.name }}" [(ngModel)]="category.value" autofocus  (change)="changeValue()">
 							</div>
 						</div>		
-						<button class="nes-btn btn-block is-success mb-2" type="submit" > BASTA PARA MI!</button>
+						<button class="nes-btn btn-block is-success"  type="submit" > BASTA PARA MI!</button>
 
 					</form>
 
@@ -83,9 +114,6 @@
 	
 	<div *ngIf="game.status == 'finished'" class="container">	
 		<h3 class="text-center mt-3 mb-2 text-danger">GAME OVER</h3>
-		<div class="text-center" style="border-bottom: 1px dashed white ">
-			<button type="button" class="nes-btn" [routerLink]="['/']"><i class="fas fa-home"></i> Regresar</button>
-		</div>
 
 		    <ul class="list-group">
 		        <li class="list-group-item-results text-center text-warning" *ngFor="let data of roundsPlayers | sortplayers ">

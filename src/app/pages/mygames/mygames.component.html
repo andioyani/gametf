@@ -17,22 +17,34 @@
 	
 			<div>
 				<ul class="list-group" >
+
 					<li class="list-group-item-results d-flex justify-content-between align-items-center">
 						ID <span class="text-right">{{ myGame.uid }}</span>
-					</li>
-					<li class="list-group-item-results d-flex justify-content-between align-items-center">
-						Rondas <span class="text-right">{{ (myGame.current + 1) }}/{{ myGame.rounds }}</span>
 					</li>
 					<li class="list-group-item-results d-flex justify-content-between align-items-center">
 						<span class="nes-text is-error" *ngIf="myGame.status == 'finished'">Finalizado</span>
 						<span class="nes-text is-success"  *ngIf="myGame.status == 'online'">Online</span>						
 						<span class="nes-text is-warning"  *ngIf="myGame.status == 'revision'">Revisión</span>
 					</li>
+					
+					<li class="list-group-item-results d-flex justify-content-between align-items-center">
+						Rondas <span class="text-right">{{ (myGame.current + 1) }}/{{ myGame.rounds }}</span>
+					</li>
+
+					<li class="list-group-item-results" *ngFor="let player of myGame.connected">
+						<span class="nes-text" [ngClass]="player.status ? 'is-success' : 'is-error'">{{ player.name }}</span>
+					</li>
+
 					<li class="list-group-item-results">
 						<button type="button" *ngIf="playerUser.uid == myGame.owner" class="nes-btn is-error btn-sm mr-1 btn-block" (click)="deleteGame(myGame)">
 							Eliminar {{ userId }}<i class="fas fa-trash-alt"></i>
 						</button>
-						<button type="button" *ngIf="myGame.status == 'finished' && playerUser.uid == myGame.owner" class="nes-btn btn-sm btn-block is-warning mr-1" [disabled]="myGame.status != 'finished'" [routerLink]="['/game/', myGame.uid]">
+
+						<button type="button" *ngIf="myGame.status == 'online' && playerUser.uid == myGame.owner  && myGame.current == 0" class="nes-btn btn-sm btn-block is-warning mr-1" [routerLink]="['/game/', myGame.uid]">
+							Editar <i class="fas fa-sync"></i>
+						</button>
+
+						<button type="button" *ngIf="playerUser.uid == myGame.owner" class="nes-btn btn-sm btn-block is-warning mr-1"  [routerLink]="['/game/', myGame.uid]">
 							Reiniciar <i class="fas fa-sync"></i>
 						</button>
 

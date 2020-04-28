@@ -6,8 +6,11 @@ import { Round } from '../models/game.model';
 })
 export class RevisionplayersPipe implements PipeTransform {
 
-  transform(value: Round[], args: unknown[]): unknown {  	
-  	let rounds:Round[] = [];
+  transform(value: Round[], userId:string, showUser:boolean): unknown {  	
+    let rounds:Round[] = [];
+
+    console.log(userId);
+    console.log(showUser);
 
   	if(!value){
   		return null;	
@@ -17,15 +20,19 @@ export class RevisionplayersPipe implements PipeTransform {
   		value.forEach(
   			(round:Round) => {
 
-  				if(round.uidPlayer != args.toString()){
-  					rounds.push(round);
+  				if(
+            (round.uidPlayer != userId && !showUser) 
+            ||
+            (round.uidPlayer == userId && showUser)
+            ){
+  					  rounds.push(round);
   				}
   				
   			}
   		)
 
   		console.log(rounds);
-		return rounds;
+		  return rounds;
   	}
 
 

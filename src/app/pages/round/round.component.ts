@@ -157,9 +157,11 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   				this.startGame = startGame;
 
-		   				if(this.game && (startGame || this.game.status == 'finished') ){	
+		   				if(this.game && (startGame || this.game.status == 'finished') ){
+
 		   					this.roundData = this.roundService.get(this.game.uid +"_"+ this.userId).subscribe(
 		   						(round:Round ) => {
+		   									console.log("Ronda");
 		   									this.round = round;	
 		   									console.log(this.round);		
 		   								}
