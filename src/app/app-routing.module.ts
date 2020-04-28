@@ -10,6 +10,7 @@ import { FriendsComponent } from './pages/friends/friends.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RoundComponent } from './pages/round/round.component';
 import { InvitationComponent } from './pages/invitation/invitation.component';
+import { WikiComponent } from './pages/wiki/wiki.component';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard]},
   { path: 'game', component: GameComponent, canActivate: [AuthGuard]},
   { path: 'mygames', component: MygamesComponent, canActivate: [AuthGuard]},
+  { path: 'wiki', component: WikiComponent},
   { path: 'round/:id', component: RoundComponent, canActivate: [AuthGuard]},
   { path: 'invitation/:id', component: InvitationComponent, canActivate: [AuthGuard]},
 

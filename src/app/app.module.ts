@@ -23,6 +23,7 @@ import { GameComponent } from './pages/game/game.component';
 import { MygamesComponent } from './pages/mygames/mygames.component';
 import { RevisionplayersPipe } from './pipes/revisionplayers.pipe';
 import { InvitationComponent } from './pages/invitation/invitation.component';
+import { WikiComponent } from './pages/wiki/wiki.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { InvitationComponent } from './pages/invitation/invitation.component';
     GameComponent,
     MygamesComponent,
     RevisionplayersPipe,
-    InvitationComponent   
+    InvitationComponent,
+    WikiComponent   
   ],
   imports: [
 
