@@ -47,7 +47,7 @@ export class RoundComponent implements OnInit, OnDestroy {
   roundPlayer:RoundPlayer = null;
   startGame = false;
   roundsPlayers = null;
-
+  waiting = true;
 
   game:GameModel = null;
 
@@ -69,21 +69,8 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   				Swal.close();
 
 		   				if(this.game && this.game.status != "finished"){
-						    Swal.fire({
-						       allowOutsideClick: false,
-						       icon: 'info',
-						       text: 'Esperando que se conecten los demas jugadores',
-						       confirmButtonText:'Volver al inicio'
-						       //text: 'Esperando a los demás jugadores...'
-						    }).then((result) => {
-							  if (result.value) {
-							  	console.log("Bye bye birdie");
-							  	this.router.navigate(['/']);
-							  }
-							});
+							this.waiting = true;						
 		   				}
-
-					    //Swal.showLoading()
 
 		   				this.game = game;
 		   				let i = 0;
@@ -106,6 +93,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   				);	
 
 		   				if(this.game.status == 'revision'){
+		   					this.waiting = false;
 		   					let update = true;
 
 		   					this.game.revision.forEach(
@@ -173,11 +161,12 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   											
 		   										}
 		   					);
+							
 
-
-		   					Swal.close();
+		   					//Swal.close();
 
 		   					if(this.game.status == 'online'){
+
 								let timerInterval
 								Swal.fire({
 								  title: 'Preparados!',
@@ -198,7 +187,8 @@ export class RoundComponent implements OnInit, OnDestroy {
 								    }, 100)
 								  },
 								  onClose: () => {
-								    clearInterval(timerInterval)
+								    clearInterval(timerInterval);
+								    this.waiting = false;
 								  }
 								}).then((result) => {
 								  /* Read more about handling dismissals below */
@@ -273,6 +263,14 @@ export class RoundComponent implements OnInit, OnDestroy {
 	    }).then((result) => {
 
 	      if (result.value) {
+	      	let main = this;
+	      	this.game.players.filter(
+	      		function(item, i){
+	      			if(item.uid == main.userId)
+				      	main.game.finishedBy = item.name;
+	      		}
+	      	);
+
 	      	this.roundService.create(this.round);
   			this.gameService.updateGame(this.game, "revision").then(
 	          (success) => {

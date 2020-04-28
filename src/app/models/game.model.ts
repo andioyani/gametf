@@ -14,6 +14,7 @@ export interface GameModel{
 	revision:PlayerConnected[];
 	status:string;
 	winner:PlayerWinner[];
+	finishedBy:string;
 }
 
 export interface PlayerWinner{

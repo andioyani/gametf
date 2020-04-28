@@ -1,13 +1,34 @@
 <div *ngIf="game" class="container">
+	
 	<div class="text-center">
-			<button type="button" class="nes-btn" (click)="exit()"><i class="fas fa-home"></i> Regresar</button>
+			<button type="button" class="nes-btn" (click)="exit()"><i class="fas fa-home"></i> Salir </button>
 	</div>
+
+	<div *ngIf="waiting">
+		<section class="nes-container is-dark is-centered with-title">
+			<h3 class="title">Sala de espera</h3>
+			<span style="margin-top: 35px !important; margin-bottom: 35px !important">Espere a que se conecten los jugadores...</span>
+			<ul class="mt-4">
+				<li *ngFor="let connected of game.connected">
+					{{ connected.name }} 
+					<span *ngIf="connected.status" class="nes-text is-success">online</span>
+					<span *ngIf="!connected.status" class="nes-text is-error">offline</span>
+				</li>
+			</ul>
+		</section>		
+	</div>
+
+
 	<div *ngIf="round && game.status != 'finished'">
 
 		<div *ngIf="game.status == 'revision'">
 			<section class="nes-container is-dark is-centered with-title mt-3"  >
 				<h3 >Letra: {{ game.letters[game.current] }} | Ronda {{game.current+1}}/{{game.rounds}}</h3>
+				<div>
+					<span class="nes-text is-success">Basta para {{ game.finishedBy }}!!!</span>
+				</div>
 				<span class="nes-text is-error">Verifique los resultados de los otros jugadores.</span>
+				
 			</section>
 
 			<div *ngFor="let player of roundsPlayers | revisionplayers:userId:true">
@@ -83,7 +104,7 @@
 			  </ul>
 			</div>
 
-			<button class="nes-btn btn-block is-primary" style="height: 75px !important; margin-top: 25px !important" type="button" (click)="approve()" [disabled]="userApproved()" >PROXIMA RONDA </button>
+			<button class="nes-btn btn-block is-primary" style="height: 75px !important; margin-top: 25px !important" type="button" (click)="approve()" *ngIf="!userApproved()" >PROXIMA RONDA </button>
 		</div>
 
 		<div *ngIf="game.status == 'online'" class="animated fadeInLeft">
