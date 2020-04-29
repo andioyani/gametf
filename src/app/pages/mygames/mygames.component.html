@@ -26,6 +26,9 @@
 	
 			<div>
 				<ul class="list-group" >
+					<li class="list-group-item-results d-flex justify-content-between align-items-center">
+						<span class="text-center">{{ myGame.ownerName }}</span>
+					</li>
 
 					<li class="list-group-item-results d-flex justify-content-between align-items-center">
 						ID <span class="text-right">{{ myGame.uid }}</span>
@@ -58,7 +61,7 @@
 							Editar <i class="fas fa-sync"></i>
 						</button>
 
-						<button type="button" *ngIf="playerUser.uid == myGame.owner" class="nes-btn btn-sm btn-block is-warning mr-1"  [routerLink]="['/game/', myGame.uid]">
+						<button type="button" *ngIf="playerUser.uid == myGame.owner && myGame.status == 'finished'" class="nes-btn btn-sm btn-block is-warning mr-1"  [routerLink]="['/game/', myGame.uid]">
 							Reiniciar 
 						</button>
 

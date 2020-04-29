@@ -56,7 +56,6 @@ export class RoundComponent implements OnInit, OnDestroy {
   	
 	this.routeSubscribe = this.route.params.subscribe(params => {
    		this.id = params['id'];
-
    		let main = this;
 
     	this.loggedData = this.auth.isLoggedIn().subscribe(
@@ -112,30 +111,6 @@ export class RoundComponent implements OnInit, OnDestroy {
 		   						if((this.game.current+1) >= this.game.rounds){
 		   							statusGame = "finished";
 									let main = this;
-
-									/*
-		   							//Calcular puntajes
-		   							this.roundsPlayers.forEach(
-		   								(roundPlayer:Round) => {
-		   										let id = roundPlayer.uid;
-		   										let points = 0;
-		   										let roundSave:Round = roundPlayer;
-
-		   										roundPlayer.roundPlayer.forEach(
-		   											(round:RoundPlayer) => {
-		   												round.categories.forEach(
-		   													(roundCat:CategoryValue)=>{
-		   														points+=roundCat.points;
-		   													}
-		   												);
-		   											}
-		   										);
-
-		   										roundSave.points = points;
-		   										this.roundService.create(roundSave);		   										
-		   								}
-		   							);
-									*/
 		   						}
 		   						else{
 									this.game.current++;
@@ -149,6 +124,7 @@ export class RoundComponent implements OnInit, OnDestroy {
 
 		   				if(this.game && (startGame || this.game.status == 'finished') ){
 		   					this.showResults = false;
+						    this.waiting = false;
 
 		   					this.roundData = this.roundService.get(this.game.uid +"_"+ this.userId).subscribe(
 		   						(round:Round ) => {
@@ -217,7 +193,6 @@ export class RoundComponent implements OnInit, OnDestroy {
 								  },
 								  onClose: () => {
 								    clearInterval(timerInterval);
-								    this.waiting = false;
 								  }
 								}).then((result) => {
 								  /* Read more about handling dismissals below */

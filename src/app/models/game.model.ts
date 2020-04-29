@@ -9,12 +9,17 @@ export interface GameModel{
 	categories:string[];
 	players:Player[];
 	owner:string;
+	ownerName:string;
 	stop:boolean;
 	connected:PlayerConnected[];
 	revision:PlayerConnected[];
 	status:string;
 	winner:PlayerWinner[];
 	finishedBy:string;
+}
+
+export interface Category{
+	name:string;
 }
 
 export interface PlayerWinner{

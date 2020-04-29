@@ -1,27 +1,27 @@
+
 <div *ngIf="game" class="container">
 	
 	<div class="text-center">
 			<button type="button" class="nes-btn" (click)="exit()"><i class="fas fa-home"></i> Salir </button>
 	</div>
 
-
+		<div *ngIf="waiting">
+			<section class="nes-container is-dark is-centered with-title">
+				<h3 class="title">Sala de espera</h3>
+				<span style="margin-top: 35px !important; margin-bottom: 35px !important">Espere a que se conecten los jugadores...</span>
+				<ul class="mt-4">
+					<li *ngFor="let connected of game.connected">
+						{{ connected.name }} 
+						<span *ngIf="connected.status" class="nes-text is-success">online</span>
+						<span *ngIf="!connected.status" class="nes-text is-error">offline</span>
+					</li>
+				</ul>
+			</section>		
+		</div>
 
 
 	<div *ngIf="round && game.status != 'finished'">
 
-	<div *ngIf="waiting		">
-		<section class="nes-container is-dark is-centered with-title">
-			<h3 class="title">Sala de espera</h3>
-			<span style="margin-top: 35px !important; margin-bottom: 35px !important">Espere a que se conecten los jugadores...</span>
-			<ul class="mt-4">
-				<li *ngFor="let connected of game.connected">
-					{{ connected.name }} 
-					<span *ngIf="connected.status" class="nes-text is-success">online</span>
-					<span *ngIf="!connected.status" class="nes-text is-error">offline</span>
-				</li>
-			</ul>
-		</section>		
-	</div>
 
 		<div *ngIf="game.status == 'revision'">
 			<section class="nes-container is-dark is-centered with-title mt-3"  >
@@ -93,10 +93,7 @@
 						    </li>
 						</ul>
 					</div>					
-
 				</div>
-
-
 			</div>
 	
 			<div class="alert alert-danger" role="alert" *ngIf="userApproved()">
@@ -120,22 +117,20 @@
 					>	
 
 						<div class="form-group" *ngFor="let category of round.roundPlayer[game.current].categories">
+							<div class="bg-primary " style="height: 30px; line-height: 30px">
+								<span class="ml-2">{{ category.name }}</span>
+							</div>
 							<div class="input-group">
-								<input type="text" class="nes-input is-dark" name="{{ category.name }}" id="{{ category.name }}" placeholder="{{ category.name }}" [(ngModel)]="category.value" autofocus  (change)="changeValue()">
+								<input type="text" class="nes-input is-dark" name="{{ category.name }}" id="{{ category.name }}" placeholder="{{ game.letters[game.current] }}" [(ngModel)]="category.value" autofocus  (change)="changeValue()">
 							</div>
 						</div>		
 						<div class="alert alert-danger" role="alert" *ngIf="waiting">
 							Hay jugadores sin conexión, podrá finalizar la partida cuando estén todos conectados
 						</div>
 						<button class="nes-btn btn-block is-success"  type="submit" [disabled]="waiting"> BASTA PARA MI!</button>
-
 					</form>
-
-			</section>
-
-					
+			</section>					
 		</div>	
-
 	</div>
 	
 	<div *ngIf="game.status == 'finished'" class="container">	
@@ -166,17 +161,9 @@
 			        					<span class="nes-text text-white">{{ categoryResult.value || '-'}} ({{ categoryResult.points}} pts.)</span>
 			        				</div>
 			        		</div>
-
-
-			        	</div>
-		    			
+			        	</div>		    			
 		    		</div>
-
 		        </li>
 		    </ul>
-
-
-
 	</div>
-
 </div>

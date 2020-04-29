@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-wiki',
-  templateUrl: './wiki.component.html',
-  styleUrls: ['./wiki.component.css']
+  templateUrl: './wiki.component.html'
 })
 export class WikiComponent implements OnInit {
 

@@ -57,9 +57,14 @@
 				<div class="input-group">
 					<input type="text" class="nes-input is-dark" id="category" name="category" placeholder="Categoría" [(ngModel)]="category" aria-describedby="button-addon6">
 				</div>
+
 				<div class="text-center">
-					<button class="nes-btn is-success btn-block" [ngClass]="!category ? 'is-disabled' : ''" [disabled]="!category" type="button"  (click)="addCategory()"><i class="fas fa-plus" ></i> Agregar</button>					
+					<button class="nes-btn is-success btn-block" [ngClass]="!category || game.categories.length == 10 ? 'is-disabled' : ''" [disabled]="!category || game.categories.length == 10" type="button"  (click)="addCategory()"><i class="fas fa-plus" ></i> Agregar</button>	
+					<button class="nes-btn btn-block" [ngClass]="categories.length == 0 || game.categories.length == 10 ? 'is-disabled' : ''" [disabled]=" categories.length == 0 || game.categories.length == 10" type="button"  (click)="randomCategory()"><i class="fas fa-random"></i> Aleatoria</button>					
+				
 				</div>
+
+				<div class="bg-secondary text-center" style="height: 35px; line-height: 35px">{{ game.categories.length }}/10</div>
 
 				<div class="lists" >
 					<ul class="nes-list is-disc" >

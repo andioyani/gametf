@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
-import { GameModel, PlayerConnected, Player } from '../../models/game.model';
+import { GameModel, PlayerConnected, Player, Category } from '../../models/game.model';
 import { ActivatedRoute } from '@angular/router';
 import  Swal  from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/cloud/user.service';
 import { GameService } from '../../services/cloud/game.service';
+import { CategoryService } from '../../services/cloud/category.service';
 import { User } from '../../models/user.model';
 import { NgForm } from '@angular/forms'; 
 import { Router } from '@angular/router';
@@ -22,6 +23,7 @@ export class GameComponent implements OnInit, OnDestroy {
 	          private route: ActivatedRoute, 
 	          private router:Router, 
 	          private userService:UserService, 
+	          private categoryService:CategoryService, 
 	          private gameService:GameService
 	          ) { 
 
@@ -39,7 +41,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
 			                            	let id:string = this.generateUID();
 
-										    this.game = {uid:id, title:"", finishedBy:"", winner:null, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
+										    this.game = {uid:id, ownerName:userDoc.name, title:"", finishedBy:"", winner:null, current:0, rounds:this.letters.length, owner:this.playerUser.uid, players:[], categories:[], connected:[], revision:[], stop:false, letters:[], status:"online"};    
 									    	this.game.players.push(this.playerUser);  
 									    	console.log(this.game);
 
@@ -54,7 +56,7 @@ export class GameComponent implements OnInit, OnDestroy {
 	loggedData = null;
 	userData = null;
 	gamesData = null;
-
+	categoryData = null;
 
 	playerUser:Player = null;
 	letters:string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
@@ -69,10 +71,18 @@ export class GameComponent implements OnInit, OnDestroy {
 	selectedLetters:string[]=null;
 	removedLetters:string[]=null;
 
+	categories:Category[] = [];
+
 	ngOnInit(): void {
       this.routeSubscribe = this.route.params.subscribe(params => {
            let idGame = params['id'];
            
+           this.categoryData = this.categoryService.list().subscribe(
+           		(categories:Category[]) => {
+           				this.categories = categories;
+           		}
+           	);
+
            if(idGame){
               this.gameData = this.gameService.getGameData(idGame).subscribe(
                   (game:GameModel) => { 
@@ -120,6 +130,8 @@ export class GameComponent implements OnInit, OnDestroy {
 	      this.routeSubscribe.unsubscribe();
 	    if(this.gameData)
 	      this.gameData.unsubscribe();
+	  	if(this.categoryData)
+	  		this.categoryData.unsubscribe();
 	}
 
 	onSubmit(form:NgForm){
@@ -155,6 +167,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
 	    this.gameService.createGame(this.game).then(
 	      (success) => {
+					this.game.categories.forEach(
+						(category:string) => {
+							this.categoryService.add({name:category});
+						}
+					);
+					
 	                Swal.close(); 
 	                this.game = null;
 	                this.router.navigate([`/mygames`]);
@@ -176,6 +194,21 @@ export class GameComponent implements OnInit, OnDestroy {
 
 	restartLetters(){
 	  this.letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+	}
+
+	randomCategory(){
+		let number = Math.floor(Math.random() * this.categories.length);
+		let main = this;
+		console.log(number);
+
+		this.categories.filter(
+			function(item, i){
+				if(i==number){
+					main.game.categories.push(item.name);
+					main.categories.splice(i, 1);
+				}
+			}
+		);
 	}
 
 	addRemoveLetter(letter:string){
@@ -213,6 +246,7 @@ export class GameComponent implements OnInit, OnDestroy {
 	    function(item,i){
 	      if(item == category){
 	        main.game.categories.splice(i, 1);
+	        main.categories.push({name:category});
 	      }
 	    }
 	);
